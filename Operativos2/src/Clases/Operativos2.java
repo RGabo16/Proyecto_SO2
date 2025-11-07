@@ -4,6 +4,8 @@
  */
 package Clases;
 
+import interfaces.View;
+
 /**
  *
  * @author Usuario
@@ -15,6 +17,9 @@ public class Operativos2 {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        View v = new View();
+        v.setVisible(true);
+        
     }
     
 }

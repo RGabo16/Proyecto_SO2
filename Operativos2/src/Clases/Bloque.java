@@ -17,6 +17,8 @@ public class Bloque {
 
     public Bloque(Archivo archi) {
         this.archi = archi;
+        this.siguiente = null;
+        this.anterior=null;
     }
 
     public Bloque getSiguiente() {

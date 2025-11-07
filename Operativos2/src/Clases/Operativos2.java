@@ -4,6 +4,8 @@
  */
 package Clases;
 
+import interfaces.View;
+
 /**
  *
  * @author Usuario
@@ -19,6 +21,9 @@ public class Operativos2 {
         Archivo a = new Archivo("",2,"");
         Archivo b = new Archivo("",3,"");
         Archivo c = new Archivo("",4,"");
+        View v = new View();
+        v.setVisible(true);
+        
     }
     
 }

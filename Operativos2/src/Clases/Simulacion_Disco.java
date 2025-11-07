@@ -12,6 +12,12 @@ public class Simulacion_Disco {
     Cola lista_bloques;
     int espacio_disponible;
     int tamano;
+
+    public Simulacion_Disco(Cola lista_bloques, int espacio_disponible, int tamano) {
+        this.lista_bloques = lista_bloques;
+        this.espacio_disponible = espacio_disponible;
+        this.tamano = tamano;
+    }
     
     
     public void agregar_archivo(Archivo a){

@@ -13,6 +13,12 @@ public class Proceso {
     String estado;//listo, nuevo, bloqueado,terminado, ejecutando
     String tipo_solicitud;//CRUD
 
+    public Proceso(String tipo_solicitud) {
+        this.tipo_solicitud = tipo_solicitud;
+    }
+    
+    
+
     public int getId() {
         return id;
     }

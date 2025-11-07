@@ -13,9 +13,26 @@ public class Bloque {
     int id;
     String estado ;//libre u ocupado
     Archivo archi;//el archivo que esta usando este bloque en disco
+    Bloque siguiente,anterior;
 
     public Bloque(Archivo archi) {
         this.archi = archi;
+    }
+
+    public Bloque getSiguiente() {
+        return siguiente;
+    }
+
+    public void setSiguiente(Bloque siguiente) {
+        this.siguiente = siguiente;
+    }
+
+    public Bloque getAnterior() {
+        return anterior;
+    }
+
+    public void setAnterior(Bloque anterior) {
+        this.anterior = anterior;
     }
 
     

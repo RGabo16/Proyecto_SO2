@@ -13,6 +13,8 @@ public class Cola {
     String nombre;
     Nodo cabeza;
     Nodo cola;
+    Bloque cabezaB;
+    Bloque colaB;
     int tamano;
 
     /*listo, new, bloqueado, suspendido listo,suspendido bloqueado,largo,corto,mediano plazo,terminados*/
@@ -56,7 +58,45 @@ public class Cola {
         }
 
     }
+    public void add_nodo() {
+        Nodo nodo = new Nodo();
+        if (estaVacia()) {
+            setCabeza(nodo);
+            setCola(nodo);
+        } else {
+            getCola().setSiguiente(nodo);
+            setCola(nodo);
+        }
+        tamano++;
+    }
+    public void add_bloque(Bloque nodo) {
+        
+        
+        if (estaVacia()) {
+            setCabezaB(nodo);
+            setColaB(nodo);
+        } else {
+            getColaB().setSiguiente(nodo);
+            setColaB(nodo);
+        }
+        tamano++;
+        nodo.setEstado("Ocupado");
+    }
+    public void desencolarB() {
+        if (estaVacia()) {
+            // Manejar error o devolver un valor de indicador
+            throw new IllegalStateException("La cola está vacía");
+        } else {
+            this.getCabezaB().setEstado("Libre");
+            this.setCabezaB(this.getCabezaB().getSiguiente());
+            tamano--;
+            if (this.getCabezaB() == null) {
+                this.setColaB(null);
+            }
+            
+        }
 
+    }
     public String getNombre() {
         return nombre;
     }
@@ -87,6 +127,22 @@ public class Cola {
 
     public void setTamano(int tamano) {
         this.tamano = tamano;
+    }
+
+    public Bloque getCabezaB() {
+        return cabezaB;
+    }
+
+    public void setCabezaB(Bloque cabezaB) {
+        this.cabezaB = cabezaB;
+    }
+
+    public Bloque getColaB() {
+        return colaB;
+    }
+
+    public void setColaB(Bloque colaB) {
+        this.colaB = colaB;
     }
     
 }

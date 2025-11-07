@@ -12,6 +12,13 @@ public class Directorio {
     String nombre;
     Cola lista_archivos;
 
+    public Directorio(String nombre) {
+        this.nombre = nombre;
+        this.lista_archivos = lista_archivos;
+    }
+    
+    
+
     public String getNombre() {
         return nombre;
     }

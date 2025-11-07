@@ -14,6 +14,11 @@ public class Bloque {
     String estado ;//libre u ocupado
     Archivo archi;//el archivo que esta usando este bloque en disco
 
+    public Bloque(Archivo archi) {
+        this.archi = archi;
+    }
+
+    
     public String getInstruccion() {
         return instruccion;
     }

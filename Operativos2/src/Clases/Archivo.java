@@ -16,6 +16,18 @@ public class Archivo {
     Bloque bloq_inicial;
     Cola lista_bloq;
     String creador;
+    String privacidad;
+
+    public Archivo(String nombre, int cantidad_bloq,String priv) {
+        this.nombre = nombre;
+        this.cantidad_bloq = cantidad_bloq;
+        this.bloq_inicial = bloq_inicial;
+        this.lista_bloq = lista_bloq;
+        this.creador = creador;
+        this.privacidad = priv;
+    }
+
+    
 
     public String getNombre() {
         return nombre;
@@ -55,6 +67,14 @@ public class Archivo {
 
     public void setCreador(String creador) {
         this.creador = creador;
+    }
+
+    public String getPrivacidad() {
+        return privacidad;
+    }
+
+    public void setPrivacidad(String privacidad) {
+        this.privacidad = privacidad;
     }
     
 }

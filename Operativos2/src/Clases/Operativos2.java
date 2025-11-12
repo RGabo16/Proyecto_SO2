@@ -21,8 +21,10 @@ public class Operativos2 {
         Archivo a = new Archivo("",2,"");
         Archivo b = new Archivo("",3,"");
         Archivo c = new Archivo("",4,"");
+        Proceso p1= new Proceso("",a);
         View v = new View();
         v.setVisible(true);
+        
         
     }
     

@@ -12,9 +12,14 @@ public class Proceso {
     int id;
     String estado;//listo, nuevo, bloqueado,terminado, ejecutando
     String tipo_solicitud;//CRUD
+    Archivo archivo;
+    int ciclos;
 
-    public Proceso(String tipo_solicitud) {
+    public Proceso(String tipo_solicitud, Archivo archivo) {
         this.tipo_solicitud = tipo_solicitud;
+        this.estado = "Nuevo";
+        this.archivo = archivo;
+        this.ciclos=this.archivo.getCantidad_bloq();
     }
     
     
@@ -41,6 +46,22 @@ public class Proceso {
 
     public void setTipo_solicitud(String tipo_solicitud) {
         this.tipo_solicitud = tipo_solicitud;
+    }
+
+    public Archivo getArchivo() {
+        return archivo;
+    }
+
+    public void setArchivo(Archivo archivo) {
+        this.archivo = archivo;
+    }
+
+    public int getCiclos() {
+        return ciclos;
+    }
+
+    public void setCiclos(int ciclos) {
+        this.ciclos = ciclos;
     }
     
     

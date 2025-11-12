@@ -58,8 +58,8 @@ public class Cola {
         }
 
     }
-    public void add_nodo() {
-        Nodo nodo = new Nodo();
+    public void add_nodo(Object elem) {
+        Nodo nodo = new Nodo(elem);
         if (estaVacia()) {
             setCabeza(nodo);
             setCola(nodo);

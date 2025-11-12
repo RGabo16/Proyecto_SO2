@@ -24,20 +24,21 @@ public class Simulacion_Disco {
         if(this.getEspacio_disponible()>a.getCantidad_bloq()){
             this.setEspacio_disponible(espacio_disponible- a.getCantidad_bloq());
             int i;
-            for(i=0; i<a.getCantidad_bloq();i++){
+            /*for(i=0; i<a.getCantidad_bloq();i++){
                 this.getLista_bloques().add_bloque(a.getBloq_inicial());
-                
-            }
+                AQUI CAMBIAN LOS COLORES DEL DISCO
+            }*/
         }
     }
     public void quitar_archivo(Archivo a){
         
             this.setEspacio_disponible(espacio_disponible+ a.getCantidad_bloq());
             int i;
-            for(i=0; i<a.getCantidad_bloq();i++){
+            //SE QUITAN LOS COLORES DEL ARCHIVO EN DISCO
+           /* for(i=0; i<a.getCantidad_bloq();i++){
                 this.getLista_bloques().desencolarB();
                 //desencolar
-            }
+            }*/
         
     }
 

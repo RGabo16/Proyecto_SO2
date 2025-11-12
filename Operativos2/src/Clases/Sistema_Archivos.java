@@ -12,6 +12,12 @@ public class Sistema_Archivos {
     Directorio raiz;
     Cola cola_procesos;
 
+    public Sistema_Archivos() {
+        this.raiz = new Directorio("Raiz");
+        this.cola_procesos = new Cola("Sistema de Archivos");
+    }
+    
+
     public Directorio getRaiz() {
         return raiz;
     }

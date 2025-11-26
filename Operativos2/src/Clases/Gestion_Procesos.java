@@ -16,9 +16,9 @@ public class Gestion_Procesos implements Runnable {
     public void run() {
         long tiempo= 1;
         Gestion_Procesos gp = new Gestion_Procesos(tiempo);
-        Archivo a = new Archivo("",2,"");
-        Archivo b = new Archivo("",3,"");
-        Archivo c = new Archivo("",4,"");
+        Archivo a = new Archivo("",2,"", "Modo Usuario");
+        Archivo b = new Archivo("",3,"", "Modo Usuario");
+        Archivo c = new Archivo("",4,"", "Modo Usuario");
         Proceso p1= new Proceso("",a);
         int u;
             for (u=0;u<101;u++){

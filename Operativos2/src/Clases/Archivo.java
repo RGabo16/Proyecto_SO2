@@ -18,7 +18,7 @@ public class Archivo {
     String creador;
     String privacidad;
 
-    public Archivo(String nombre, int cantidad_bloq, String priv) {
+    public Archivo(String nombre, int cantidad_bloq, String priv, String creador) {
         this.nombre = nombre;
         this.cantidad_bloq = cantidad_bloq;
         this.bloq_inicial = bloq_inicial;

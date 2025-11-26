@@ -20,9 +20,9 @@ public class Operativos2 {
         // TODO code application logic here
        
         
-        Archivo a = new Archivo("",2,"");
-        Archivo b = new Archivo("",3,"");
-        Archivo c = new Archivo("",4,"");
+        Archivo a = new Archivo("",2,"", "Modo Usuario");
+        Archivo b = new Archivo("",3,"", "Modo Usuario");
+        Archivo c = new Archivo("",4,"", "Modo Usuario");
         Proceso p1= new Proceso("",a);
         Controlador controlador = new Controlador();
 //        View v = new View();

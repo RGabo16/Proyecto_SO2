@@ -9,9 +9,11 @@ public class Directorio {
     String nombre;
     Cola lista_archivos = new Cola("Archivos");
     Cola lista_subdirectorios = new Cola("Subdirectorios");
+    private String creador;
 
-    public Directorio(String nombre) {
+    public Directorio(String nombre, String creador) {
         this.nombre = nombre;
+        this.creador = creador;
     }
     
     
@@ -43,6 +45,14 @@ public class Directorio {
     @Override
     public String toString() {
         return this.nombre;
+    }
+
+    public String getCreador() {
+        return creador;
+    }
+
+    public void setCreador(String creador) {
+        this.creador = creador;
     }
     
 }

@@ -18,6 +18,7 @@ public class Operativos2 {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+       
         
         Archivo a = new Archivo("",2,"");
         Archivo b = new Archivo("",3,"");
@@ -25,8 +26,7 @@ public class Operativos2 {
         Proceso p1= new Proceso("",a);
         Controlador controlador = new Controlador();
 //        View v = new View();
-//        v.setVisible(true);
-        
+//        v.setVisible(true);      
         
     }
     

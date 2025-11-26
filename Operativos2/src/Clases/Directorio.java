@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package Clases;
 
 /**
@@ -14,7 +11,6 @@ public class Directorio {
 
     public Directorio(String nombre) {
         this.nombre = nombre;
-        this.lista_archivos = lista_archivos;
     }
     
     

@@ -1,9 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package interfaces;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JToggleButton;
+import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -13,6 +20,14 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class View extends javax.swing.JFrame {
     
     boolean isAdmin = true;
+    private Controlador controlador;
+
+    public View(Controlador controlador) {
+        this.controlador = controlador;
+
+        initComponents();
+
+    }
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(View.class.getName());
 
     /**
@@ -47,13 +62,14 @@ public class View extends javax.swing.JFrame {
         editarButton = new javax.swing.JButton();
         eliminarButton = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        colaSolicitudes = new javax.swing.JList<>();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList<>();
+        ColaSolicitudesTerminadas = new javax.swing.JList<>();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         planPolicy = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
+        clockLabel = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -134,19 +150,19 @@ public class View extends javax.swing.JFrame {
             }
         });
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+        colaSolicitudes.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane4.setViewportView(jList1);
+        jScrollPane4.setViewportView(colaSolicitudes);
 
-        jList2.setModel(new javax.swing.AbstractListModel<String>() {
+        ColaSolicitudesTerminadas.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane5.setViewportView(jList2);
+        jScrollPane5.setViewportView(ColaSolicitudesTerminadas);
 
         jLabel1.setText("Cola de solicitudes (E/S)");
 
@@ -155,6 +171,8 @@ public class View extends javax.swing.JFrame {
         planPolicy.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FIFO", "SSTF", "SCAN", "C-SCAN" }));
 
         jLabel3.setText("Política de planificación:");
+
+        clockLabel.setText("jLabel4");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -167,18 +185,21 @@ public class View extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(modeButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(crearButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(editarButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(eliminarButton)
-                                .addGap(18, 18, 18))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(planPolicy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addGap(92, 92, 92)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(editarButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(eliminarButton))
+                            .addComponent(clockLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
                         .addComponent(detailsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane2)
                     .addComponent(jScrollPane3)
@@ -214,8 +235,9 @@ public class View extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(planPolicy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel3))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel3)
+                                    .addComponent(clockLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
                             .addComponent(jLabel2))
@@ -230,7 +252,7 @@ public class View extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap(22, Short.MAX_VALUE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Simulación", jPanel1);
@@ -333,7 +355,188 @@ public class View extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new View().setVisible(true));
     }
 
+    public boolean isIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+
+    public Controlador getControlador() {
+        return controlador;
+    }
+
+    public void setControlador(Controlador controlador) {
+        this.controlador = controlador;
+    }
+
+    public JButton getCrearButton() {
+        return crearButton;
+    }
+
+    public void setCrearButton(JButton crearButton) {
+        this.crearButton = crearButton;
+    }
+
+    public JLabel getDetailsLabel() {
+        return detailsLabel;
+    }
+
+    public void setDetailsLabel(JLabel detailsLabel) {
+        this.detailsLabel = detailsLabel;
+    }
+
+    public JButton getEditarButton() {
+        return editarButton;
+    }
+
+    public void setEditarButton(JButton editarButton) {
+        this.editarButton = editarButton;
+    }
+
+    public JButton getEliminarButton() {
+        return eliminarButton;
+    }
+
+    public void setEliminarButton(JButton eliminarButton) {
+        this.eliminarButton = eliminarButton;
+    }
+
+    public JPanel getjPanel1() {
+        return jPanel1;
+    }
+
+    public void setjPanel1(JPanel jPanel1) {
+        this.jPanel1 = jPanel1;
+    }
+
+    public JPanel getjPanel2() {
+        return jPanel2;
+    }
+
+    public void setjPanel2(JPanel jPanel2) {
+        this.jPanel2 = jPanel2;
+    }
+
+    public JScrollPane getjScrollPane1() {
+        return jScrollPane1;
+    }
+
+    public void setjScrollPane1(JScrollPane jScrollPane1) {
+        this.jScrollPane1 = jScrollPane1;
+    }
+
+    public JScrollPane getjScrollPane2() {
+        return jScrollPane2;
+    }
+
+    public void setjScrollPane2(JScrollPane jScrollPane2) {
+        this.jScrollPane2 = jScrollPane2;
+    }
+
+    public JScrollPane getjScrollPane3() {
+        return jScrollPane3;
+    }
+
+    public void setjScrollPane3(JScrollPane jScrollPane3) {
+        this.jScrollPane3 = jScrollPane3;
+    }
+
+    public JScrollPane getjScrollPane4() {
+        return jScrollPane4;
+    }
+
+    public void setjScrollPane4(JScrollPane jScrollPane4) {
+        this.jScrollPane4 = jScrollPane4;
+    }
+
+    public JScrollPane getjScrollPane5() {
+        return jScrollPane5;
+    }
+
+    public void setjScrollPane5(JScrollPane jScrollPane5) {
+        this.jScrollPane5 = jScrollPane5;
+    }
+
+    public JTabbedPane getjTabbedPane1() {
+        return jTabbedPane1;
+    }
+
+    public void setjTabbedPane1(JTabbedPane jTabbedPane1) {
+        this.jTabbedPane1 = jTabbedPane1;
+    }
+
+    public JTable getjTable1() {
+        return jTable1;
+    }
+
+    public void setjTable1(JTable jTable1) {
+        this.jTable1 = jTable1;
+    }
+
+    public JTable getjTable2() {
+        return jTable2;
+    }
+
+    public void setjTable2(JTable jTable2) {
+        this.jTable2 = jTable2;
+    }
+
+    public JTree getjTree() {
+        return jTree;
+    }
+
+    public void setjTree(JTree jTree) {
+        this.jTree = jTree;
+    }
+
+    public JToggleButton getModeButton() {
+        return modeButton;
+    }
+
+    public void setModeButton(JToggleButton modeButton) {
+        this.modeButton = modeButton;
+    }
+
+    public JComboBox<String> getPlanPolicy() {
+        return planPolicy;
+    }
+
+    public void setPlanPolicy(JComboBox<String> planPolicy) {
+        this.planPolicy = planPolicy;
+    }
+
+    public JLabel getClockLabel() {
+        return clockLabel;
+    }
+
+    public void setClockLabel(JLabel clockLabel) {
+        this.clockLabel = clockLabel;
+    }
+
+    public JList<String> getColaSolicitudesTerminadas() {
+        return ColaSolicitudesTerminadas;
+    }
+
+    public void setColaSolicitudesTerminadas(JList<String> ColaSolicitudesTerminadas) {
+        this.ColaSolicitudesTerminadas = ColaSolicitudesTerminadas;
+    }
+
+    public JList<String> getColaSolicitudes() {
+        return colaSolicitudes;
+    }
+
+    public void setColaSolicitudes(JList<String> colaSolicitudes) {
+        this.colaSolicitudes = colaSolicitudes;
+    }
+    
+    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JList<String> ColaSolicitudesTerminadas;
+    private javax.swing.JLabel clockLabel;
+    private javax.swing.JList<String> colaSolicitudes;
     private javax.swing.JButton crearButton;
     private javax.swing.JLabel detailsLabel;
     private javax.swing.JButton editarButton;
@@ -341,8 +544,6 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JList<String> jList1;
-    private javax.swing.JList<String> jList2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;

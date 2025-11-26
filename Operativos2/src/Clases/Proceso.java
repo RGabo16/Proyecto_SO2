@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package Clases;
 
 /**
@@ -13,16 +10,32 @@ public class Proceso {
     String estado;//listo, nuevo, bloqueado,terminado, ejecutando
     String tipo_solicitud;//CRUD
     Archivo archivo;
+    Directorio directorio;
     int ciclos;
 
     public Proceso(String tipo_solicitud, Archivo archivo) {
         this.tipo_solicitud = tipo_solicitud;
         this.estado = "Nuevo";
         this.archivo = archivo;
-        this.ciclos=this.archivo.getCantidad_bloq();
+        this.directorio = null;
+        this.ciclos = this.archivo.getCantidad_bloq();
     }
     
+    public Proceso(String tipo_solicitud, Directorio directorio) {
+        this.tipo_solicitud = tipo_solicitud;
+        this.estado = "Nuevo";
+        this.archivo = null;
+        this.directorio = directorio;
+        this.ciclos = 1;
+    }
     
+    public String printProceso(){
+        if (archivo != null){
+            return this.tipo_solicitud + ": Archivo " + this.archivo.getNombre();
+        } else {
+            return this.tipo_solicitud + ": Directorio " + this.directorio.getNombre();
+        }
+    }
 
     public int getId() {
         return id;

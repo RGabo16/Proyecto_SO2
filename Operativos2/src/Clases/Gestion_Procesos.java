@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package Clases;
 
 /**
@@ -9,8 +6,12 @@ package Clases;
  * @author Usuario
  */
 public class Gestion_Procesos {
-    Cola cola_procesos;
+    Cola cola_procesos = new Cola("Cola de Solicitudes");
+    Cola cola_terminados = new Cola("Cola de Solicitudes Terminadas");
     long tiempo;
+
+    public Gestion_Procesos() {
+    }
 
     public Cola getCola_procesos() {
         return cola_procesos;
@@ -19,6 +20,16 @@ public class Gestion_Procesos {
     public void setCola_procesos(Cola cola_procesos) {
         this.cola_procesos = cola_procesos;
     }
+
+    public Cola getCola_terminados() {
+        return cola_terminados;
+    }
+
+    public void setCola_terminados(Cola cola_terminados) {
+        this.cola_terminados = cola_terminados;
+    }
+    
+    
     public void agregar_proceso(Proceso p1){
         
         this.cola_procesos.add_nodo(p1);

@@ -1,8 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
- */
+
 package interfaces;
+
+import Clases.Archivo;
+import Clases.Directorio;
+import Clases.Proceso;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -10,6 +12,7 @@ package interfaces;
  */
 public class DialogCrear extends javax.swing.JDialog {
     
+    private View padre;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(DialogCrear.class.getName());
 
     /**
@@ -17,6 +20,7 @@ public class DialogCrear extends javax.swing.JDialog {
      */
     public DialogCrear(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        padre = (View) parent;
         initComponents();
         buttonGroup.add(directorioButton);
         buttonGroup.add(archivoButton);
@@ -35,7 +39,7 @@ public class DialogCrear extends javax.swing.JDialog {
         jPanel2 = new javax.swing.JPanel();
         directorioButton = new javax.swing.JRadioButton();
         archivoButton = new javax.swing.JRadioButton();
-        jButton1 = new javax.swing.JButton();
+        createButton = new javax.swing.JButton();
         nameField = new javax.swing.JTextField();
         numberBlocks = new javax.swing.JSpinner();
         jLabel2 = new javax.swing.JLabel();
@@ -63,10 +67,10 @@ public class DialogCrear extends javax.swing.JDialog {
             }
         });
 
-        jButton1.setText("Crear");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        createButton.setText("Crear");
+        createButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                createButtonActionPerformed(evt);
             }
         });
 
@@ -95,30 +99,31 @@ public class DialogCrear extends javax.swing.JDialog {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel3)
-                        .addGap(18, 18, 18)
-                        .addComponent(numberBlocks, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)
+                        .addComponent(createButton)
                         .addGap(50, 50, 50))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addGap(50, 50, 50)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(archivoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(privacity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(directorioButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
                                 .addComponent(jLabel2)
                                 .addGap(18, 18, 18)
-                                .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(archivoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(numberBlocks, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jLabel4)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(privacity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
                 .addGap(50, 50, 50))
         );
         jPanel2Layout.setVerticalGroup(
@@ -139,7 +144,7 @@ public class DialogCrear extends javax.swing.JDialog {
                     .addComponent(privacity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(createButton)
                 .addGap(50, 50, 50))
         );
 
@@ -166,6 +171,7 @@ public class DialogCrear extends javax.swing.JDialog {
         if (directorioButton.isSelected()){
             numberBlocks.setEnabled(false);
         }
+        
     }//GEN-LAST:event_directorioButtonActionPerformed
 
     private void archivoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archivoButtonActionPerformed
@@ -175,9 +181,25 @@ public class DialogCrear extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_archivoButtonActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void createButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        if (nameField.getText().trim() != ""){
+            String nombre = nameField.getText();
+            if (archivoButton.isSelected()){
+                //Agregar proceso de creación de archivo
+                Archivo nuevoArchivo = new Archivo(nombre, (int) numberBlocks.getValue(),(String) privacity.getSelectedItem());
+                Proceso nuevoProceso = new Proceso("Crear", nuevoArchivo);
+                padre.getControlador().getGp().getCola_procesos().add_nodo(nuevoProceso);
+            } else if (directorioButton.isSelected()){
+                //Agregar proceso de creación de directorio
+                Directorio nuevoDirectorio = new Directorio(nombre);
+                Proceso nuevoProceso = new Proceso("Crear", nuevoDirectorio);
+                padre.getControlador().getGp().getCola_procesos().add_nodo(nuevoProceso);
+            } else {
+                JOptionPane.showMessageDialog(null, "Debes seleccionar el tipo de elemento a crear");
+            }
+        }
+    }//GEN-LAST:event_createButtonActionPerformed
 
     private void nameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameFieldActionPerformed
         // TODO add your handling code here:
@@ -218,13 +240,15 @@ public class DialogCrear extends javax.swing.JDialog {
                 dialog.setVisible(true);
             }
         });
+        
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JRadioButton archivoButton;
     private javax.swing.ButtonGroup buttonGroup;
+    private javax.swing.JButton createButton;
     private javax.swing.JRadioButton directorioButton;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

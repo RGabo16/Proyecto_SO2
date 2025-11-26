@@ -4,6 +4,7 @@
  */
 package Clases;
 
+import interfaces.Controlador;
 import interfaces.View;
 
 /**
@@ -22,8 +23,9 @@ public class Operativos2 {
         Archivo b = new Archivo("",3,"");
         Archivo c = new Archivo("",4,"");
         Proceso p1= new Proceso("",a);
-        View v = new View();
-        v.setVisible(true);
+        Controlador controlador = new Controlador();
+//        View v = new View();
+//        v.setVisible(true);
         
         
     }

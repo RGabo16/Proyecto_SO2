@@ -19,7 +19,7 @@ public class Gestion_Procesos implements Runnable {
         
         while (true) {
             
-            this.politica_planificacion("FIFO");
+            this.politica_planificacion("LOOK");
         }
     }
 
@@ -72,12 +72,24 @@ public class Gestion_Procesos implements Runnable {
                    
             }
             case "LIFO"-> {
-                //BUSCA IZQ Y DERECHA Y CUA
-                
+                //
+                this.manejo_procesos_inverso();
             }
-            case "LOOK"-> {
+            case "C-LOOK"-> {
                 //Busca hasta que llega a la ultima solicitud y se devuelve
                 this.manejo_procesos();
+                
+                
+                
+//                Archivo a = new Archivo("",5,"");
+//                Archivo b = new Archivo("",3,"");
+//                Archivo c = new Archivo("",4,"");
+//                Proceso p1= new Proceso("",b);
+//                Proceso p2= new Proceso("",c);
+//                Proceso p3= new Proceso("",a);
+//                this.agregar_proceso(p1);
+//                this.agregar_proceso(p2);
+//                this.agregar_proceso(p3);
                 this.manejo_procesos_inverso();
             }
             case "PA"-> {
@@ -143,14 +155,14 @@ public class Gestion_Procesos implements Runnable {
             
             t1.start();
             
-            if(this.getCola_procesos().getCabeza().getProceso()==null){
-                this.getCola_procesos().setCabeza(this.getCola_procesos().getCabeza().getAnterior());
+            if(this.getCola_procesos().getCola()==null){
+                this.getCola_procesos().setCola(this.getCola_procesos().getCola().getAnterior());
             }else{
-                System.out.println("Procesando solicitud "+ this.getCola_procesos().getCabeza().getProceso().getTipo_solicitud());
+                System.out.println("Procesando solicitud "+ this.getCola_procesos().getCola().getProceso().getTipo_solicitud());
                int i;
-            int v = this.getCola_procesos().getCabeza().getProceso().getArchivo().getCantidad_bloq();
+            int v = this.getCola_procesos().getCola().getProceso().getArchivo().getCantidad_bloq();
             for (i = 0; i < v; i++) {
-                this.getCola_procesos().getCabeza().getProceso().setCiclos(this.getCola_procesos().getCabeza().getProceso().getCiclos() - 1);
+                this.getCola_procesos().getCola().getProceso().setCiclos(this.getCola_procesos().getCola().getProceso().getCiclos() - 1);
                 
                 try {
                     //aqui el hilo espera el tiempo del ciclo
@@ -158,11 +170,10 @@ public class Gestion_Procesos implements Runnable {
                 } catch (InterruptedException ex) {
                     System.getLogger(Gestion_Procesos.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
                 }
-                System.out.println("Procesando " + this.getCola_procesos().getCabeza().getProceso().getCiclos());
+                System.out.println("Procesando " + this.getCola_procesos().getCola().getProceso().getCiclos());
             }
             //this.agregar_listo(this.getBloq().getCabeza().getProceso());
-            this.getCola_procesos().getCabeza().setProceso(null);
-            this.getCola_procesos().setCabeza(this.getCola_procesos().getCabeza().getAnterior());
+            this.getCola_procesos().setCola(this.getCola_procesos().getCola().getAnterior());
             }
             
            

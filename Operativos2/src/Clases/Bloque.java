@@ -15,12 +15,15 @@ public class Bloque {
     Archivo archi;//el archivo que esta usando este bloque en disco
     Bloque siguiente,anterior;
 
-    public Bloque(Archivo archi) {
-        this.archi = archi;
+    public Bloque() {
+        this.archi = null;
         this.siguiente = null;
         this.anterior=null;
     }
-
+    
+        
+    
+    
     public Bloque getSiguiente() {
         return siguiente;
     }

@@ -16,7 +16,34 @@ public class Sistema_Archivos {
         this.raiz = new Directorio("Raiz");
         this.cola_procesos = new Cola("Sistema de Archivos");
     }
+    public void crear_archivo(Archivo a){
+        if(this.getEspacio_disponible()>a.getCantidad_bloq()){
+            this.setEspacio_disponible(espacio_disponible- a.getCantidad_bloq());
+            int i;
+            /*for(i=0; i<a.getCantidad_bloq();i++){
+                this.getLista_bloques().add_bloque(a.getBloq_inicial());
+                AQUI CAMBIAN LOS COLORES DEL DISCO
+            }*/
+        }
+    }
+    public void eliminar_archivo(Archivo a){
+        
+            this.setEspacio_disponible(espacio_disponible+ a.getCantidad_bloq());
+            int i;
+            //SE QUITAN LOS COLORES DEL ARCHIVO EN DISCO
+           /* for(i=0; i<a.getCantidad_bloq();i++){
+                this.getLista_bloques().desencolarB();
+                //desencolar
+            }*/
+        
+    }
+    public void crear_directorio(String name){
+        
+    }
     
+    public void eliminar_directorio(Directorio dir){
+        
+    }
 
     public Directorio getRaiz() {
         return raiz;

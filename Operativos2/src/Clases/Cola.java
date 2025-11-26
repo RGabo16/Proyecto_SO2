@@ -71,18 +71,20 @@ public class Cola {
         }
         tamano++;
     }
-    public void add_bloque(Bloque nodo) {
-        
+    public void add_bloque() {
+        Bloque bloq= new Bloque();
         
         if (estaVacia()) {
-            setCabezaB(nodo);
-            setColaB(nodo);
+            setCabezaB(bloq);
+            setColaB(bloq);
         } else {
-            getColaB().setSiguiente(nodo);
-            setColaB(nodo);
+            
+            getColaB().setSiguiente(bloq);
+            setColaB(bloq);
+            getColaB().setSiguiente(cabezaB);
         }
         tamano++;
-        nodo.setEstado("Ocupado");
+        bloq.setEstado("Disponible");
     }
     public void desencolarB() {
         if (estaVacia()) {

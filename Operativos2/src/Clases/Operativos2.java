@@ -32,7 +32,6 @@ public class Operativos2 {
             gp.getCola_procesos().add_nodo(p1);
         }
        gp.getCola_procesos().getCabeza().setProceso(p1);*/
-
        Thread GP = new Thread(gp);
        GP.start();
        Thread SM = new Thread(sm);

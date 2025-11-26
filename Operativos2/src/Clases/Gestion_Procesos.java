@@ -30,7 +30,7 @@ public class Gestion_Procesos implements Runnable {
         
         while (true) {
             
-            this.politica_planificacion("LOOK");
+            this.politica_planificacion("FIFO");
         }
     }
 
@@ -70,7 +70,7 @@ public class Gestion_Procesos implements Runnable {
             case "FIFO" -> {
                 this.manejo_procesos();
             }
-            case "SCAN"-> {
+            case "C-LOOK"-> {
                 
                 //espacio del disco 100
                 this.manejo_procesos();
@@ -90,7 +90,7 @@ public class Gestion_Procesos implements Runnable {
                 //
                 this.manejo_procesos_inverso();
             }
-            case "C-LOOK"-> {
+            case "LOOK"-> {
                 //Busca hasta que llega a la ultima solicitud y se devuelve
                 this.manejo_procesos();
                 

@@ -22,8 +22,9 @@ public class Sistema_Archivos {
             this.setEspacio_disponible(espacio_disponible- a.getCantidad_bloq());
             int i;
             for (i=0;i<this.getCola_archivos().getTamano();i++){
-                if(this.getCola_archivos().getCabeza().getElemento().getClass(dir)){
-                    
+                if(this.getCola_archivos().getCabeza().getElemento().getClass()=dir){
+                    this.getCola_archivos().getCabeza().getElemento().//al directorio se le agrega archivo
+                            
                 }
             }
         }
@@ -40,6 +41,7 @@ public class Sistema_Archivos {
         
     }
     public void crear_directorio(String name){
+        this.getCola_archivos().getCabeza().
         
     }
     

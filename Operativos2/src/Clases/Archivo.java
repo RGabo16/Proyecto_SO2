@@ -18,7 +18,7 @@ public class Archivo {
     String creador;
     String privacidad;
 
-    public Archivo(String nombre, int cantidad_bloq,String priv) {
+    public Archivo(String nombre, int cantidad_bloq, String priv) {
         this.nombre = nombre;
         this.cantidad_bloq = cantidad_bloq;
         this.bloq_inicial = bloq_inicial;
@@ -66,6 +66,11 @@ public class Archivo {
 
     public void setPrivacidad(String privacidad) {
         this.privacidad = privacidad;
+    }
+    
+    @Override
+    public String toString() {
+        return this.nombre;
     }
     
 }

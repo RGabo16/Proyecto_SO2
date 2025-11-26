@@ -1,17 +1,32 @@
 
 package interfaces;
 
+import Clases.Archivo;
+import Clases.Directorio;
+import Clases.Proceso;
+import java.awt.GridLayout;
+import java.awt.event.ActionListener;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.JTree;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 /**
  *
@@ -21,12 +36,107 @@ public class View extends javax.swing.JFrame {
     
     boolean isAdmin = true;
     private Controlador controlador;
+    private DefaultTreeModel treeModel;
+    private DefaultMutableTreeNode rootNode;
+    private JPanel panel;
+    private JTextField nombreField;
+    private JRadioButton directorioButton;
+    private JRadioButton archivoButton;
+    private JSpinner bloquesSpinner;
+    private JComboBox<String> privacidadCombo;
 
     public View(Controlador controlador) {
         this.controlador = controlador;
-
+        
         initComponents();
+        
+        rootNode = new DefaultMutableTreeNode("/");
+        treeModel = new DefaultTreeModel(rootNode);
+        // Configurar el renderer para mostrar solo el nombre
+        // Configurar el renderer personalizado para mostrar iconos adecuados
+        jTree.setCellRenderer(new DefaultTreeCellRenderer() {
+            @Override
+            public java.awt.Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+                super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 
+                if (value instanceof DefaultMutableTreeNode) {
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+                    Object userObject = node.getUserObject();
+
+                    // Establecer el texto (nombre)
+                    if (userObject instanceof Archivo) {
+                        setText(((Archivo) userObject).getNombre());
+                        // Icono de archivo para archivos
+                        setIcon(UIManager.getIcon("FileView.fileIcon"));
+                    } else if (userObject instanceof Directorio) {
+                        setText(((Directorio) userObject).getNombre());
+                        // Icono de carpeta para directorios
+                        if (expanded) {
+                            setIcon(UIManager.getIcon("FileView.directoryIcon"));
+                        } else {
+                            setIcon(UIManager.getIcon("FileView.directoryIcon"));
+                        }
+                    } else if (userObject instanceof String) {
+                        setText((String) userObject);
+                        // Para el nodo raíz (string "/")
+                        setIcon(UIManager.getIcon("FileView.directoryIcon"));
+                    }
+                }
+                return this;
+            }
+        });
+        jTree.setModel(treeModel);
+        
+        Directorio dirPrincipal = new Directorio("/");
+        
+        //Nombre
+        nombreField = new JTextField(15);
+
+        // Tipo
+        directorioButton = new JRadioButton("Directorio", true); // Directorio seleccionado por defecto
+        archivoButton = new JRadioButton("Archivo", false);
+        ButtonGroup tipoGroup = new ButtonGroup();
+        tipoGroup.add(directorioButton);
+        tipoGroup.add(archivoButton);
+
+        //#Bloques
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1, 1, 100, 1); // Valor inicial 1, Mínimo 1, Máximo 100, Paso 1
+        bloquesSpinner = new JSpinner(spinnerModel);
+        bloquesSpinner.setEnabled(false); // Deshabilitado por defecto si Directorio está seleccionado
+
+        // Privacidad (JComboBox)
+        String[] opcionesPrivacidad = {"Público", "Privado"};
+        privacidadCombo = new JComboBox<>(opcionesPrivacidad);
+
+        ActionListener tipoListener = e -> {
+            // Habilita el JSpinner solo si se selecciona 'Archivo'
+            bloquesSpinner.setEnabled(archivoButton.isSelected());
+        };
+
+        directorioButton.addActionListener(tipoListener);
+        archivoButton.addActionListener(tipoListener);
+
+        panel = new JPanel(new GridLayout(4, 2, 5, 5));
+
+    // Fila 1: Nombre
+        panel.add(new JLabel("Nombre:"));
+        panel.add(nombreField);
+        
+        // Fila 2: Tipo (Radio Buttons en un sub-panel para mantenerlos juntos)
+        JPanel radioPanel = new JPanel();
+        radioPanel.add(directorioButton);
+        radioPanel.add(archivoButton);
+        panel.add(new JLabel("Tipo:"));
+        panel.add(radioPanel);
+        
+        // Fila 3: # Bloques
+        panel.add(new JLabel("# Bloques:"));
+        panel.add(bloquesSpinner);
+
+        // Fila 4: Privacidad
+        panel.add(new JLabel("Privacidad:"));
+        panel.add(privacidadCombo);
+    
     }
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(View.class.getName());
 
@@ -48,7 +158,7 @@ public class View extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        editView = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         modeButton = new javax.swing.JToggleButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -58,7 +168,6 @@ public class View extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
-        crearButton = new javax.swing.JButton();
         editarButton = new javax.swing.JButton();
         eliminarButton = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -70,6 +179,7 @@ public class View extends javax.swing.JFrame {
         planPolicy = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
         clockLabel = new javax.swing.JLabel();
+        crearButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -129,13 +239,6 @@ public class View extends javax.swing.JFrame {
         ));
         jScrollPane3.setViewportView(jTable2);
 
-        crearButton.setText("Crear");
-        crearButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                crearButtonActionPerformed(evt);
-            }
-        });
-
         editarButton.setText("Editar");
         editarButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -174,6 +277,13 @@ public class View extends javax.swing.JFrame {
 
         clockLabel.setText("jLabel4");
 
+        crearButton.setText("Crear");
+        crearButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                crearButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -182,12 +292,12 @@ public class View extends javax.swing.JFrame {
                 .addGap(25, 25, 25)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(modeButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(crearButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                                .addGap(18, 18, 18))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -216,7 +326,7 @@ public class View extends javax.swing.JFrame {
                 .addGap(25, 25, 25))
         );
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {crearButton, editarButton, eliminarButton});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {editarButton, eliminarButton});
 
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -255,7 +365,7 @@ public class View extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Simulación", jPanel1);
+        editView.addTab("Simulación", jPanel1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -268,17 +378,17 @@ public class View extends javax.swing.JFrame {
             .addGap(0, 650, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("Métricas", jPanel2);
+        editView.addTab("Métricas", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1000, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(editView, javax.swing.GroupLayout.PREFERRED_SIZE, 1000, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 650, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(editView, javax.swing.GroupLayout.PREFERRED_SIZE, 650, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -301,35 +411,245 @@ public class View extends javax.swing.JFrame {
 
     private void jTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jTreeValueChanged
         // TODO add your handling code here:
-        DefaultMutableTreeNode nodoSeleccionado = (DefaultMutableTreeNode) jTree.getLastSelectedPathComponent();
+            DefaultMutableTreeNode nodoSeleccionado = (DefaultMutableTreeNode) jTree.getLastSelectedPathComponent();
 
-        if (nodoSeleccionado != null) {
-        // Obtener los datos del nodo (el string que pasamos al crearlo)
-        Object datosNodo = nodoSeleccionado.getUserObject();
-        detailsLabel.setText((String) datosNodo);
-        System.out.println("Nodo seleccionado: " + datosNodo);
-    }
+            if (nodoSeleccionado != null) {
+                Object datosNodo = nodoSeleccionado.getUserObject();
+                String detalles = "";
+
+                if (datosNodo instanceof Archivo) {
+                    Archivo archivo = (Archivo) datosNodo;
+                    detalles = String.format("Archivo: %s\nTamaño: %d bloques\nPrivacidad: %s", 
+                        archivo.getNombre(), archivo.getCantidad_bloq(), archivo.getPrivacidad());
+                } else if (datosNodo instanceof Directorio) {
+                    Directorio directorio = (Directorio) datosNodo;
+                    detalles = String.format("Directorio: %s\nElementos: %d", 
+                        directorio.getNombre(), nodoSeleccionado.getChildCount());
+                } else if (datosNodo instanceof String) {
+                    detalles = "Directorio Raíz: " + datosNodo;
+                }
+
+                detailsLabel.setText("<html>" + detalles.replace("\n", "<br>") + "</html>");
+                System.out.println("Nodo seleccionado: " + datosNodo);
+            }  
     }//GEN-LAST:event_jTreeValueChanged
-
-    private void crearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crearButtonActionPerformed
-        // TODO add your handling code here:
-        DialogCrear dialogo = new DialogCrear(this, true);
-        dialogo.setLocationRelativeTo(this);
-        dialogo.setVisible(true);
-    }//GEN-LAST:event_crearButtonActionPerformed
 
     private void editarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editarButtonActionPerformed
         // TODO add your handling code here:
-        DialogEditar dialogo = new DialogEditar(this, true);
-        dialogo.setLocationRelativeTo(this);
-        dialogo.setVisible(true);
+        DefaultMutableTreeNode nodoSeleccionado = (DefaultMutableTreeNode) jTree.getLastSelectedPathComponent();
+    
+        if (nodoSeleccionado == null) {
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione un elemento para editar.", "Sin selección", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Object objeto = nodoSeleccionado.getUserObject();
+        String nombreActual = obtenerNombreDeObjeto(objeto);
+
+        // Crear panel de edición
+        JPanel panelEdicion = new JPanel(new GridLayout(2, 2, 5, 5));
+        JTextField nombreFieldEditar = new JTextField(nombreActual, 15);
+
+        panelEdicion.add(new JLabel("Nombre:"));
+        panelEdicion.add(nombreFieldEditar);
+
+        // Si es archivo, mostrar bloques
+        if (objeto instanceof Archivo) {
+            Archivo archivo = (Archivo) objeto;
+            JSpinner bloquesSpinnerEditar = new JSpinner(new SpinnerNumberModel(archivo.getCantidad_bloq(), 1, 100, 1));
+            JComboBox<String> privacidadComboEditar = new JComboBox<>(new String[]{"Público", "Privado"});
+            privacidadComboEditar.setSelectedItem(archivo.getPrivacidad());
+
+            panelEdicion.add(new JLabel("# Bloques:"));
+            panelEdicion.add(bloquesSpinnerEditar);
+            panelEdicion.add(new JLabel("Privacidad:"));
+            panelEdicion.add(privacidadComboEditar);
+        }
+
+        int resultado = JOptionPane.showConfirmDialog(
+            null, 
+            panelEdicion, 
+            "Editar Elemento", 
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE
+        );
+
+        if (resultado == JOptionPane.OK_OPTION) {
+            String nuevoNombre = nombreFieldEditar.getText().trim();
+            if (nuevoNombre.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "El nombre no puede estar vacío.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Actualizar el objeto
+            if (objeto instanceof Archivo) {
+                Archivo archivo = (Archivo) objeto;
+                archivo.setNombre(nuevoNombre);
+                // Actualizar otros atributos si es necesario
+            } else if (objeto instanceof Directorio) {
+                Directorio directorio = (Directorio) objeto;
+                directorio.setNombre(nuevoNombre);
+            }
+
+            // Notificar al tree model que el nodo ha cambiado
+            treeModel.nodeChanged(nodoSeleccionado);
+
+            // Agregar proceso de edición a la cola
+            if (objeto instanceof Archivo) {
+                Proceso procesoEditar = new Proceso("Editar", (Archivo) objeto);
+                this.getControlador().getGp().getCola_procesos().add_nodo(procesoEditar);
+            } else if (objeto instanceof Directorio) {
+                Proceso procesoEditar = new Proceso("Editar", (Directorio) objeto);
+                this.getControlador().getGp().getCola_procesos().add_nodo(procesoEditar);
+            }
+        }
     }//GEN-LAST:event_editarButtonActionPerformed
 
     private void eliminarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarButtonActionPerformed
         // TODO add your handling code here:
-        
+        DefaultMutableTreeNode nodoSeleccionado = (DefaultMutableTreeNode) jTree.getLastSelectedPathComponent();
+    
+        if (nodoSeleccionado == null) {
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione un elemento para eliminar.", "Sin selección", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // No permitir eliminar la raíz
+        if (nodoSeleccionado == rootNode) {
+            JOptionPane.showMessageDialog(this, "No se puede eliminar el directorio raíz.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Confirmar eliminación
+        Object objeto = nodoSeleccionado.getUserObject();
+        String nombre = obtenerNombreDeObjeto(objeto);
+
+        int confirmacion = JOptionPane.showConfirmDialog(
+            this, 
+            "¿Está seguro de que desea eliminar '" + nombre + "'?",
+            "Confirmar eliminación",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            // Eliminar del árbol
+            treeModel.removeNodeFromParent(nodoSeleccionado);
+
+            // Aquí también deberías eliminar el objeto de tu modelo de datos
+            // y agregar un proceso de eliminación a la cola
+            if (objeto instanceof Archivo) {
+                Proceso procesoEliminar = new Proceso("Eliminar", (Archivo) objeto);
+                this.getControlador().getGp().getCola_procesos().add_nodo(procesoEliminar);
+            } else if (objeto instanceof Directorio) {
+                Proceso procesoEliminar = new Proceso("Eliminar", (Directorio) objeto);
+                this.getControlador().getGp().getCola_procesos().add_nodo(procesoEliminar);
+            }
+        }
     }//GEN-LAST:event_eliminarButtonActionPerformed
 
+    private String obtenerNombreDeObjeto(Object objeto) {
+        if (objeto instanceof Archivo) {
+            return ((Archivo) objeto).getNombre();
+        } else if (objeto instanceof Directorio) {
+            return ((Directorio) objeto).getNombre();
+        } else if (objeto instanceof String) {
+            return (String) objeto;
+        }
+        return "Desconocido";
+    }
+    
+    private void crearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crearButtonActionPerformed
+        // TODO add your handling code here:
+            int resultado = JOptionPane.showConfirmDialog(
+                null, 
+                panel, 
+                "Crear nuevo Archivo/Directorio", 
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE
+            );
+
+            // Si el usuario cancela, no hacer nada
+            if (resultado != JOptionPane.OK_OPTION) {
+                return;
+            }
+
+            String nombre = nombreField.getText();
+            String tipo = directorioButton.isSelected() ? "Directorio" : "Archivo";
+            int bloques = (int) bloquesSpinner.getValue();
+            String privacidad = (String) privacidadCombo.getSelectedItem();
+
+            // Validar que el nombre no esté vacío
+            if (nombre.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "El nombre no puede estar vacío.", "Error de Entrada", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Obtener el nodo seleccionado en el árbol (será el padre)
+            DefaultMutableTreeNode nodoPadre = getSelectedNodeOrRoot();
+
+            // Verificar que si el padre es un archivo, no se puedan agregar hijos
+            if (nodoPadre.getUserObject() instanceof Archivo) {
+                JOptionPane.showMessageDialog(null, "No se pueden agregar elementos dentro de un archivo.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Crear el objeto y el nodo del árbol
+            Object nuevoObjeto;
+            DefaultMutableTreeNode nuevoNodo;
+
+            if (tipo.equals("Archivo")) {
+                // Crear archivo - los archivos son hojas (no pueden tener hijos)
+                Archivo nuevoArchivo = new Archivo(nombre, bloques, privacidad);
+                nuevoObjeto = nuevoArchivo;
+                nuevoNodo = new DefaultMutableTreeNode(nuevoArchivo);
+                // Los archivos son hojas por definición
+
+                // Agregar a Proceso
+                Proceso nuevoProceso = new Proceso("Crear", nuevoArchivo);
+                this.getControlador().getGp().getCola_procesos().add_nodo(nuevoProceso);
+            } else {
+                // Crear directorio - los directorios pueden tener hijos
+                Directorio nuevoDirectorio = new Directorio(nombre);
+                nuevoObjeto = nuevoDirectorio;
+                nuevoNodo = new DefaultMutableTreeNode(nuevoDirectorio);
+                // Los directorios permiten hijos por defecto
+
+                Proceso nuevoProceso = new Proceso("Crear", nuevoDirectorio);
+                this.getControlador().getGp().getCola_procesos().add_nodo(nuevoProceso);
+            }
+
+            // Agregar el nodo al árbol
+            treeModel.insertNodeInto(nuevoNodo, nodoPadre, nodoPadre.getChildCount());
+
+            jTree.expandPath(new TreePath(nodoPadre.getPath()));
+
+            // Limpiar campos después de crear
+            nombreField.setText("");
+            bloquesSpinner.setValue(1);
+            privacidadCombo.setSelectedIndex(0);
+
+            // Forzar actualización del árbol
+            treeModel.reload(nodoPadre);  
+    }//GEN-LAST:event_crearButtonActionPerformed
+    
+    private boolean permiteHijos(DefaultMutableTreeNode node) {
+        if (node == null) return false;
+
+        Object userObject = node.getUserObject();
+        // Los directorios permiten hijos, los archivos no
+        return userObject instanceof Directorio || userObject instanceof String;
+    }
+
+    private DefaultMutableTreeNode getSelectedNodeOrRoot() {
+        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) jTree.getLastSelectedPathComponent();
+        if (selectedNode == null) {
+            // Si no hay nodo seleccionado, usar la raíz
+            return rootNode;
+        }
+        return selectedNode;
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -369,14 +689,6 @@ public class View extends javax.swing.JFrame {
 
     public void setControlador(Controlador controlador) {
         this.controlador = controlador;
-    }
-
-    public JButton getCrearButton() {
-        return crearButton;
-    }
-
-    public void setCrearButton(JButton crearButton) {
-        this.crearButton = crearButton;
     }
 
     public JLabel getDetailsLabel() {
@@ -460,11 +772,11 @@ public class View extends javax.swing.JFrame {
     }
 
     public JTabbedPane getjTabbedPane1() {
-        return jTabbedPane1;
+        return editView;
     }
 
     public void setjTabbedPane1(JTabbedPane jTabbedPane1) {
-        this.jTabbedPane1 = jTabbedPane1;
+        this.editView = jTabbedPane1;
     }
 
     public JTable getjTable1() {
@@ -529,8 +841,7 @@ public class View extends javax.swing.JFrame {
 
     public void setColaSolicitudes(JList<String> colaSolicitudes) {
         this.colaSolicitudes = colaSolicitudes;
-    }
-    
+    } 
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -539,6 +850,7 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JList<String> colaSolicitudes;
     private javax.swing.JButton crearButton;
     private javax.swing.JLabel detailsLabel;
+    private javax.swing.JTabbedPane editView;
     private javax.swing.JButton editarButton;
     private javax.swing.JButton eliminarButton;
     private javax.swing.JLabel jLabel1;
@@ -551,7 +863,6 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTree jTree;

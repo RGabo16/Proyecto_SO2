@@ -31,6 +31,10 @@ public class Gestion_Procesos implements Runnable {
         }
     }
 
+    public Gestion_Procesos(){
+        
+    }
+    
     public Gestion_Procesos(long tiempo) {
         this.tiempo = tiempo;
     }

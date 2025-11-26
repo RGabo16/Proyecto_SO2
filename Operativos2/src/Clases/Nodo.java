@@ -9,6 +9,8 @@ public class Nodo {
     int num;
     Object elemento;
     Proceso p1;
+    Archivo archivo;
+    Directorio directorio;
     Nodo anterior, siguiente;
     
     public Nodo(Object elem ) {
@@ -25,6 +27,14 @@ public class Nodo {
         this.elemento = null;
         this.anterior = null;
         this.siguiente = null;
+    }
+    
+    public Nodo(Archivo archivo) {
+        this.archivo = archivo;
+    }
+    
+    public Nodo(Directorio directorio) {
+        this.directorio = directorio;
     }
     
     public int getNum() {
@@ -66,5 +76,23 @@ public class Nodo {
     public void setProceso(Proceso p1) {
         this.p1 = p1;
     }
+
+    public Archivo getArchivo() {
+        return archivo;
+    }
+
+    public void setArchivo(Archivo archivo) {
+        this.archivo = archivo;
+    }
+
+    public Directorio getDirectorio() {
+        return directorio;
+    }
+
+    public void setDirectorio(Directorio directorio) {
+        this.directorio = directorio;
+    }
+    
+    
     
 }

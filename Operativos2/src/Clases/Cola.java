@@ -48,7 +48,7 @@ public class Cola {
             // Manejar error o devolver un valor de indicador
             throw new IllegalStateException("La cola está vacía");
         } else {
-            this.getCabeza().getSiguiente().setAnterior(null);
+            //this.getCabeza().getSiguiente().setAnterior(null);
             this.setCabeza(this.getCabeza().getSiguiente());
             tamano--;
             if (this.getCabeza() == null) {
@@ -57,6 +57,22 @@ public class Cola {
             
         }
 
+    }
+    public void desencolar_final(){
+        if (estaVacia()) {
+            // Manejar error o devolver un valor de indicador
+            throw new IllegalStateException("La cola está vacía");
+        } else {
+            if (this.getCabeza()==this.getCola()){
+                this.setCabeza(null);
+                this.setCola(null);
+                this.tamano--;
+            }else{
+                this.setCola(this.getCola().getAnterior());
+                this.getCola().setSiguiente(null);
+                this.tamano--;
+            }
+        }
     }
     public void add_nodo(Proceso elem) {
         Nodo nodo = new Nodo(elem);
@@ -71,18 +87,22 @@ public class Cola {
         }
         tamano++;
     }
-    public void add_bloque(Bloque nodo) {
-        
+    public void add_bloque() {
+        Bloque bloq= new Bloque();
         
         if (estaVacia()) {
-            setCabezaB(nodo);
-            setColaB(nodo);
+            setCabezaB(bloq);
+            setColaB(bloq);
         } else {
-            getColaB().setSiguiente(nodo);
-            setColaB(nodo);
+            
+            getColaB().setSiguiente(bloq);
+            setColaB(bloq);
+            getColaB().setSiguiente(cabezaB);
         }
+        this.getColaB().setId(tamano);
         tamano++;
-        nodo.setEstado("Ocupado");
+        
+        bloq.setEstado("Disponible");
     }
     public void desencolarB() {
         if (estaVacia()) {

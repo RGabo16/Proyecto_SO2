@@ -25,9 +25,12 @@ public class Gestion_Procesos implements Runnable {
             gp.getCola_procesos().add_nodo("DISPONIBLE");
         }
         gp.getCola_procesos().getCabeza().setProceso(p1);
+        
+        
+        
         while (true) {
-            System.out.println("HOLA");
-            this.politica_planificacion("FIFO");
+            
+            this.politica_planificacion("LOOK");
         }
     }
 
@@ -68,32 +71,45 @@ public class Gestion_Procesos implements Runnable {
                 this.manejo_procesos();
             }
             case "SCAN"-> {
-                int i;
+                
                 //espacio del disco 100
-                for (i=0;i<101;i++){
+                this.manejo_procesos();
+                this.manejo_procesos_inverso();
                     
                     //desde el inicio si existe proceso lo ejecuta sino siguiente al terminar da la vuelta 
                     
-                }
+                
             }
             case "C-SCAN"-> {
-                int i;
+                
                 //espacio del disco 100
-                for (i=0;i<101;i++){
-                    //desde el inicio si existe proceso lo ejecuta sino siguiente al terminar vuelve al inicio
-                }
+                this.manejo_procesos();
+                   
             }
-            case "SSTF"-> {
-                //BUSCA IZQ Y DERECHA Y CUA
-                
-            }
-            case "LOOK"-> {
-                //Busca hasta que llega a la ultima solicitud y se devuelve
-                
+            case "LIFO"-> {
+                //
+                this.manejo_procesos_inverso();
             }
             case "C-LOOK"-> {
-                //Busca hasta que llega a la ultima solicitud y se devuelve al inicio
+                //Busca hasta que llega a la ultima solicitud y se devuelve
+                this.manejo_procesos();
                 
+                
+                
+//                Archivo a = new Archivo("",5,"");
+//                Archivo b = new Archivo("",3,"");
+//                Archivo c = new Archivo("",4,"");
+//                Proceso p1= new Proceso("",b);
+//                Proceso p2= new Proceso("",c);
+//                Proceso p3= new Proceso("",a);
+//                this.agregar_proceso(p1);
+//                this.agregar_proceso(p2);
+//                this.agregar_proceso(p3);
+                this.manejo_procesos_inverso();
+            }
+            case "PA"-> {
+                //Busca hasta que llega a la ultima solicitud y se devuelve al inicio
+                this.manejo_procesos();
             }
         }
     }
@@ -107,19 +123,14 @@ public class Gestion_Procesos implements Runnable {
             } catch (InterruptedException ex) {
                 System.getLogger(Gestion_Procesos.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             }
-            }else{
-            
-            t1.start();
-            
-            if(this.getCola_procesos().getCabeza().getProceso()==null){
-                this.getCola_procesos().setCabeza(this.getCola_procesos().getCabeza().getSiguiente());
-            }else{
+            }else{     
+   
                 System.out.println("Procesando solicitud "+ this.getCola_procesos().getCabeza().getProceso().getTipo_solicitud());
                int i;
             int v = this.getCola_procesos().getCabeza().getProceso().getArchivo().getCantidad_bloq();
             for (i = 0; i < v; i++) {
                 this.getCola_procesos().getCabeza().getProceso().setCiclos(this.getCola_procesos().getCabeza().getProceso().getCiclos() - 1);
-
+                
                 try {
                     //aqui el hilo espera el tiempo del ciclo
                     t1.sleep(tiempo * 1000);
@@ -128,14 +139,65 @@ public class Gestion_Procesos implements Runnable {
                 }
                 System.out.println("Procesando " + this.getCola_procesos().getCabeza().getProceso().getCiclos());
             }
+            
+            this.getCola_terminados().add_nodo(this.getCola_procesos().getCabeza().getProceso());
+            this.getCola_procesos().desencolar();
+            
             //this.agregar_listo(this.getBloq().getCabeza().getProceso());
-            this.getCola_procesos().getCabeza().setProceso(null);
+           /* this.getCola_procesos().getCabeza().setProceso(null);
+            this.getCola_procesos().setCabeza(this.getCola_procesos().getCabeza().getSiguiente());*/
+            }
+            
+           
+
+        
+        }
+    
+            
+           
+
+        
+        
+    public void manejo_procesos_inverso(){
+        Thread t1 =new Thread();
+        if (this.getCola_procesos().getTamano() == 0) {
+
+            System.out.println("no hay procesos");
+            try {
+                t1.sleep(tiempo * 1000);
+            } catch (InterruptedException ex) {
+                System.getLogger(Gestion_Procesos.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
+            }else{
+            
+            t1.start();
+            
+            if(this.getCola_procesos().getCola()==null){
+                this.getCola_procesos().setCola(this.getCola_procesos().getCola().getAnterior());
+            }else{
+                System.out.println("Procesando solicitud "+ this.getCola_procesos().getCola().getProceso().getTipo_solicitud());
+               int i;
+            int v = this.getCola_procesos().getCola().getProceso().getArchivo().getCantidad_bloq();
+            for (i = 0; i < v; i++) {
+                this.getCola_procesos().getCola().getProceso().setCiclos(this.getCola_procesos().getCola().getProceso().getCiclos() - 1);
+                
+                try {
+                    //aqui el hilo espera el tiempo del ciclo
+                    t1.sleep(tiempo * 1000);
+                } catch (InterruptedException ex) {
+                    System.getLogger(Gestion_Procesos.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                }
+                System.out.println("Procesando " + this.getCola_procesos().getCola().getProceso().getCiclos());
+            }
+            //this.agregar_listo(this.getBloq().getCabeza().getProceso());
+            this.getCola_terminados().add_nodo(this.getCola_procesos().getCola().getProceso());
+            this.getCola_procesos().setCola(this.getCola_procesos().getCola().getAnterior());
+            this.getCola_procesos().desencolar();
             }
             
            
 
         }
         }
-    
     }
 

@@ -20,13 +20,24 @@ public class Operativos2 {
         // TODO code application logic here
        
         
-        Archivo a = new Archivo("",2,"", "Modo Usuario");
-        Archivo b = new Archivo("",3,"", "Modo Usuario");
-        Archivo c = new Archivo("",4,"", "Modo Usuario");
-        Proceso p1= new Proceso("",a);
         Controlador controlador = new Controlador();
 //        View v = new View();
 //        v.setVisible(true);      
+       long tiempo= 1;
+       Gestion_Procesos gp = new Gestion_Procesos(tiempo);
+       Simulacion_Disco sm = new Simulacion_Disco();
+       
+      /*  int u;
+            for (u=0;u<100;u++){
+            gp.getCola_procesos().add_nodo(p1);
+        }
+       gp.getCola_procesos().getCabeza().setProceso(p1);*/
+
+       Thread GP = new Thread(gp);
+       GP.start();
+       Thread SM = new Thread(sm);
+       SM.start();
+       
         
     }
     

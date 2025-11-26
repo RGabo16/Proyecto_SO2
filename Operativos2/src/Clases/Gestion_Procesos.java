@@ -124,8 +124,10 @@ public class Gestion_Procesos implements Runnable {
                 }
                 System.out.println("Procesando " + this.getCola_procesos().getCabeza().getProceso().getCiclos());
             }
+            
             this.getCola_terminados().add_nodo(this.getCola_procesos().getCabeza().getProceso());
             this.getCola_procesos().desencolar();
+            
             //this.agregar_listo(this.getBloq().getCabeza().getProceso());
            /* this.getCola_procesos().getCabeza().setProceso(null);
             this.getCola_procesos().setCabeza(this.getCola_procesos().getCabeza().getSiguiente());*/
@@ -173,7 +175,9 @@ public class Gestion_Procesos implements Runnable {
                 System.out.println("Procesando " + this.getCola_procesos().getCola().getProceso().getCiclos());
             }
             //this.agregar_listo(this.getBloq().getCabeza().getProceso());
+            this.getCola_terminados().add_nodo(this.getCola_procesos().getCola().getProceso());
             this.getCola_procesos().setCola(this.getCola_procesos().getCola().getAnterior());
+            this.getCola_procesos().desencolar();
             }
             
            

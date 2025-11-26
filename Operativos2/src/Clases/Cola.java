@@ -48,7 +48,7 @@ public class Cola {
             // Manejar error o devolver un valor de indicador
             throw new IllegalStateException("La cola está vacía");
         } else {
-            
+            this.getCabeza().getSiguiente().setAnterior(null);
             this.setCabeza(this.getCabeza().getSiguiente());
             tamano--;
             if (this.getCabeza() == null) {
@@ -64,8 +64,10 @@ public class Cola {
             setCabeza(nodo);
             setCola(nodo);
         } else {
+            nodo.setAnterior(this.getCola());
             getCola().setSiguiente(nodo);
             setCola(nodo);
+            
         }
         tamano++;
     }

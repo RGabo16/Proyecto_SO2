@@ -123,47 +123,12 @@ public class Gestion_Procesos implements Runnable {
 
         
         }
-    public void manejo_procesos_inverso(){
-        Thread t1 =new Thread();
-        if (this.getCola_procesos().getTamano() == 0) {
-
-            System.out.println("no hay procesos");
-            try {
-                t1.sleep(tiempo * 1000);
-            } catch (InterruptedException ex) {
-                System.getLogger(Gestion_Procesos.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-            }
-            }else{
-            
-            System.out.println("De regreso");
-           
-            
-            if(this.getCola_procesos().getCabeza().getProceso()==null){
-                this.getCola_procesos().setCabeza(this.getCola_procesos().getCabeza().getAnterior());
-            }else{
-                System.out.println("Procesando solicitud "+ this.getCola_procesos().getCabeza().getProceso().getTipo_solicitud());
-               int i;
-            int v = this.getCola_procesos().getCabeza().getProceso().getArchivo().getCantidad_bloq();
-            for (i = 0; i < v; i++) {
-                this.getCola_procesos().getCabeza().getProceso().setCiclos(this.getCola_procesos().getCabeza().getProceso().getCiclos() - 1);
-                
-                try {
-                    //aqui el hilo espera el tiempo del ciclo
-                    t1.sleep(tiempo * 1000);
-                } catch (InterruptedException ex) {
-                    System.getLogger(Gestion_Procesos.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-                }
-                System.out.println("Procesando " + this.getCola_procesos().getCabeza().getProceso().getCiclos());
-            }
-            //this.agregar_listo(this.getBloq().getCabeza().getProceso());
-            this.getCola_procesos().getCabeza().setProceso(null);
-            this.getCola_procesos().setCabeza(this.getCola_procesos().getCabeza().getSiguiente());
-            }
+    
             
            
 
-        }
-        }
+        
+        
     public void manejo_procesos_inverso(){
         Thread t1 =new Thread();
         if (this.getCola_procesos().getTamano() == 0) {

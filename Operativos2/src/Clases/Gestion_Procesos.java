@@ -14,6 +14,17 @@ public class Gestion_Procesos implements Runnable {
     long tiempo;
  @Override
     public void run() {
+        long tiempo= 1;
+        Gestion_Procesos gp = new Gestion_Procesos(tiempo);
+        Archivo a = new Archivo("",2,"", "Modo Usuario");
+        Archivo b = new Archivo("",3,"", "Modo Usuario");
+        Archivo c = new Archivo("",4,"", "Modo Usuario");
+        Proceso p1= new Proceso("",a);
+        int u;
+            for (u=0;u<101;u++){
+            gp.getCola_procesos().add_nodo("DISPONIBLE");
+        }
+        gp.getCola_procesos().getCabeza().setProceso(p1);
         
         
         
@@ -23,6 +34,10 @@ public class Gestion_Procesos implements Runnable {
         }
     }
 
+    public Gestion_Procesos(){
+        
+    }
+    
     public Gestion_Procesos(long tiempo) {
         this.tiempo = tiempo;
     }

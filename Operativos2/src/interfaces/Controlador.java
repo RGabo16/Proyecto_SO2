@@ -1,10 +1,13 @@
 package interfaces;
 
 import Clases.Cola;
+import Clases.Directorio;
 import Clases.Gestion_Procesos;
 import Clases.Nodo;
+import Clases.Tree;
 import java.time.format.DateTimeFormatter;
 import javax.swing.DefaultListModel;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  *
@@ -14,7 +17,8 @@ public class Controlador extends Thread {
 
     private View view = new View(this);
     private volatile long segundos = 0L;
-    Gestion_Procesos gp = new Gestion_Procesos();
+    private Gestion_Procesos gp = new Gestion_Procesos();
+    private Tree arbol;
 
     public Controlador() {
         this.start();
@@ -28,6 +32,7 @@ public class Controlador extends Thread {
         });
     }
 
+    //Crear modelo para JList
     public DefaultListModel createModel(Cola cola) {
         DefaultListModel model = new DefaultListModel();
         Nodo actual = cola.getCabeza();
@@ -36,6 +41,26 @@ public class Controlador extends Thread {
             actual = actual.getSiguiente();
         }
         return model;
+    }
+    
+    //Crear modelo para JTree
+    public DefaultMutableTreeNode convertirDirectorio(Directorio dir){
+        DefaultMutableTreeNode nodoDir = new DefaultMutableTreeNode(dir.getNombre());
+        Cola listaArchivos = dir.getLista_archivos();
+        Nodo actual  = listaArchivos.getCabeza();
+        //Agregar archivos
+        while (actual != null){
+            nodoDir.add(new DefaultMutableTreeNode(actual.getArchivo().getNombre()));        
+        }
+        
+        Cola listaSubdirectorios = dir.getLista_subdirectorios();
+        Directorio actualSub = listaSubdirectorios.getCabeza().getDirectorio();
+        //Agregar Subdirectorios
+        while (actualSub != null){
+            nodoDir.add(convertirDirectorio(actualSub));
+        }
+        
+        return nodoDir;
     }
 
     @Override
@@ -112,6 +137,14 @@ public class Controlador extends Thread {
 
     public void setGp(Gestion_Procesos gp) {
         this.gp = gp;
+    }
+
+    public Tree getArbol() {
+        return arbol;
+    }
+
+    public void setArbol(Tree arbol) {
+        this.arbol = arbol;
     }
     
     

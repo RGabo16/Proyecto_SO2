@@ -7,6 +7,7 @@ package Clases;
  */
 public class Proceso {
     int id;
+    String tipo;
     String estado;//listo, nuevo, bloqueado,terminado, ejecutando
     String tipo_solicitud;//CRUD
     Archivo archivo;
@@ -75,6 +76,22 @@ public class Proceso {
 
     public void setCiclos(int ciclos) {
         this.ciclos = ciclos;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public Directorio getDirectorio() {
+        return directorio;
+    }
+
+    public void setDirectorio(Directorio directorio) {
+        this.directorio = directorio;
     }
     
     

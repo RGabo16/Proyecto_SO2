@@ -19,32 +19,25 @@ public class Operativos2 {
     public static void main(String[] args) {
         // TODO code application logic here
        
+        
+        Controlador controlador = new Controlador();
+//        View v = new View();
+//        v.setVisible(true);      
        long tiempo= 1;
        Gestion_Procesos gp = new Gestion_Procesos(tiempo);
        Simulacion_Disco sm = new Simulacion_Disco();
-       Archivo a = new Archivo("",5,"");
-        Archivo b = new Archivo("",3,"");
-        Archivo c = new Archivo("",4,"");
-        Proceso p1= new Proceso("",b);
-         Proceso p2= new Proceso("",c);
-          Proceso p3= new Proceso("",a);
-        
+       
       /*  int u;
             for (u=0;u<100;u++){
             gp.getCola_procesos().add_nodo(p1);
         }
        gp.getCola_procesos().getCabeza().setProceso(p1);*/
-       gp.agregar_proceso(p1);
-gp.agregar_proceso(p2);
-gp.agregar_proceso(p3);
+
        Thread GP = new Thread(gp);
        GP.start();
        Thread SM = new Thread(sm);
        SM.start();
        
-       View v = new View();
-       v.setVisible(true);
-        
         
     }
     

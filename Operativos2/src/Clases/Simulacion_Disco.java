@@ -70,7 +70,9 @@ public class Simulacion_Disco {
     public void llenar_bloques(){
         int i;
         for (i=0;i<100;i++){
+            
             this.getLista_bloques().add_bloque();
+            
         }
     }
     public void setLista_bloques(Cola lista_bloques) {

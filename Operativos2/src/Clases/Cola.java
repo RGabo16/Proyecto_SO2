@@ -58,6 +58,22 @@ public class Cola {
         }
 
     }
+    public void desencolar_final(){
+        if (estaVacia()) {
+            // Manejar error o devolver un valor de indicador
+            throw new IllegalStateException("La cola está vacía");
+        } else {
+            if (this.getCabeza()==this.getCola()){
+                this.setCabeza(null);
+                this.setCola(null);
+                this.tamano--;
+            }else{
+                this.setCola(this.getCola().getAnterior());
+                this.getCola().setSiguiente(null);
+                this.tamano--;
+            }
+        }
+    }
     public void add_nodo(Proceso elem) {
         Nodo nodo = new Nodo(elem);
         if (estaVacia()) {
@@ -83,7 +99,9 @@ public class Cola {
             setColaB(bloq);
             getColaB().setSiguiente(cabezaB);
         }
+        this.getColaB().setId(tamano);
         tamano++;
+        
         bloq.setEstado("Disponible");
     }
     public void desencolarB() {

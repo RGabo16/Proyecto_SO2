@@ -71,7 +71,7 @@ public class Gestion_Procesos implements Runnable {
                 this.manejo_procesos();
                    
             }
-            case "SSTF"-> {
+            case "LIFO"-> {
                 //BUSCA IZQ Y DERECHA Y CUA
                 
             }
@@ -80,7 +80,7 @@ public class Gestion_Procesos implements Runnable {
                 this.manejo_procesos();
                 this.manejo_procesos_inverso();
             }
-            case "C-LOOK"-> {
+            case "PA"-> {
                 //Busca hasta que llega a la ultima solicitud y se devuelve al inicio
                 this.manejo_procesos();
             }

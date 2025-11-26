@@ -21,10 +21,11 @@ public class Operativos2 {
        
        long tiempo= 1;
        Gestion_Procesos gp = new Gestion_Procesos(tiempo);
-       Archivo a = new Archivo("",0,"");
+       Archivo a = new Archivo("",1,"");
         Archivo b = new Archivo("",3,"");
         Archivo c = new Archivo("",4,"");
         Proceso p1= new Proceso("",a);
+        
       /*  int u;
             for (u=0;u<100;u++){
             gp.getCola_procesos().add_nodo(p1);

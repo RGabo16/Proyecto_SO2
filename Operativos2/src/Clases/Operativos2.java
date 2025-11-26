@@ -21,6 +21,7 @@ public class Operativos2 {
        
        long tiempo= 1;
        Gestion_Procesos gp = new Gestion_Procesos(tiempo);
+       Simulacion_Disco sm = new Simulacion_Disco();
        Archivo a = new Archivo("",1,"");
         Archivo b = new Archivo("",3,"");
         Archivo c = new Archivo("",4,"");
@@ -34,6 +35,9 @@ public class Operativos2 {
        gp.agregar_proceso(p1);
        Thread GP = new Thread(gp);
        GP.start();
+       Thread SM = new Thread(sm);
+       SM.start();
+       
        View v = new View();
        v.setVisible(true);
         

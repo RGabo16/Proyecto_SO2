@@ -8,15 +8,23 @@ package Clases;
  *
  * @author Usuario
  */
-public class Simulacion_Disco {
+public class Simulacion_Disco implements Runnable {
     Cola lista_bloques;
     int espacio_disponible;
     int tamano;
+    
+      @Override
+    public void run() {
+        
+        this.llenar_bloques();
+        
 
-    public Simulacion_Disco(Cola lista_bloques, int tamano) {
-        this.lista_bloques = lista_bloques;
+    }
+
+    public Simulacion_Disco() {
+        this.lista_bloques = new Cola("lista_bloques");
         this.espacio_disponible = 100;
-        this.tamano = tamano;
+        this.tamano = 100;
     }
     
     public void asignarBloques(Archivo a){

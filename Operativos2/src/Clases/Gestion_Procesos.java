@@ -14,18 +14,8 @@ public class Gestion_Procesos implements Runnable {
     long tiempo;
  @Override
     public void run() {
-        long tiempo= 1;
-        Gestion_Procesos gp = new Gestion_Procesos(tiempo);
-        Archivo a = new Archivo("",2,"", "Modo Usuario");
-        Archivo b = new Archivo("",3,"", "Modo Usuario");
-        Archivo c = new Archivo("",4,"", "Modo Usuario");
-        Proceso p1= new Proceso("",a);
-        int u;
-            for (u=0;u<101;u++){
-            gp.getCola_procesos().add_nodo("DISPONIBLE");
-        }
-        gp.getCola_procesos().getCabeza().setProceso(p1);
-        
+        long tiempo= 100L;
+        Gestion_Procesos gp = new Gestion_Procesos(tiempo);     
         
         
         while (true) {
@@ -114,90 +104,66 @@ public class Gestion_Procesos implements Runnable {
         }
     }
     public void manejo_procesos(){
-        Thread t1 =new Thread();
+        Thread t1 = new Thread();
         if (this.getCola_procesos().getTamano() == 0) {
-
-            System.out.println("no hay procesos");
+            t1.start();
             try {
-                t1.sleep(tiempo * 1000);
+                t1.sleep(tiempo * 100000);
             } catch (InterruptedException ex) {
-                System.getLogger(Gestion_Procesos.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+               // System.getLogger(Gestion_Procesos.class.getName()).log(System.Logger.Level.ERROR, null, ex);
             }
-            }else{     
-   
-                System.out.println("Procesando solicitud "+ this.getCola_procesos().getCabeza().getProceso().getTipo_solicitud());
-               int i;
+        } else {     
+            t1.start();
+            System.out.println("Procesando solicitud "+ this.getCola_procesos().getCabeza().getProceso().getTipo_solicitud());
+            int i;
             int v = this.getCola_procesos().getCabeza().getProceso().getArchivo().getCantidad_bloq();
             for (i = 0; i < v; i++) {
                 this.getCola_procesos().getCabeza().getProceso().setCiclos(this.getCola_procesos().getCabeza().getProceso().getCiclos() - 1);
-                
                 try {
-                    //aqui el hilo espera el tiempo del ciclo
                     t1.sleep(tiempo * 1000);
                 } catch (InterruptedException ex) {
-                    System.getLogger(Gestion_Procesos.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                   // System.getLogger(Gestion_Procesos.class.getName()).log(System.Logger.Level.ERROR, null, ex);
                 }
                 System.out.println("Procesando " + this.getCola_procesos().getCabeza().getProceso().getCiclos());
             }
             
             this.getCola_terminados().add_nodo(this.getCola_procesos().getCabeza().getProceso());
             this.getCola_procesos().desencolar();
-            
-            //this.agregar_listo(this.getBloq().getCabeza().getProceso());
-           /* this.getCola_procesos().getCabeza().setProceso(null);
-            this.getCola_procesos().setCabeza(this.getCola_procesos().getCabeza().getSiguiente());*/
-            }
-            
-           
-
-        
         }
+    }
     
-            
-           
-
-        
-        
+    // Hacer lo mismo en manejo_procesos_inverso()
     public void manejo_procesos_inverso(){
-        Thread t1 =new Thread();
+        Thread t1 = new Thread();
         if (this.getCola_procesos().getTamano() == 0) {
-
             System.out.println("no hay procesos");
             try {
                 t1.sleep(tiempo * 1000);
             } catch (InterruptedException ex) {
-                System.getLogger(Gestion_Procesos.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                //System.getLogger(Gestion_Procesos.class.getName()).log(System.Logger.Level.ERROR, null, ex);
             }
-            }else{
-            
+        } else {
             t1.start();
-            
             if(this.getCola_procesos().getCola()==null){
                 this.getCola_procesos().setCola(this.getCola_procesos().getCola().getAnterior());
-            }else{
+            } else {
                 System.out.println("Procesando solicitud "+ this.getCola_procesos().getCola().getProceso().getTipo_solicitud());
-               int i;
-            int v = this.getCola_procesos().getCola().getProceso().getArchivo().getCantidad_bloq();
-            for (i = 0; i < v; i++) {
-                this.getCola_procesos().getCola().getProceso().setCiclos(this.getCola_procesos().getCola().getProceso().getCiclos() - 1);
-                
-                try {
-                    //aqui el hilo espera el tiempo del ciclo
-                    t1.sleep(tiempo * 1000);
-                } catch (InterruptedException ex) {
-                    System.getLogger(Gestion_Procesos.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                int i;
+                int v = this.getCola_procesos().getCola().getProceso().getArchivo().getCantidad_bloq();
+                for (i = 0; i < v; i++) {
+                    this.getCola_procesos().getCola().getProceso().setCiclos(this.getCola_procesos().getCola().getProceso().getCiclos() - 1);
+                    try {
+                        t1.sleep(tiempo * 1000);
+                    } catch (InterruptedException ex) {
+                       // System.getLogger(Gestion_Procesos.class.getName()).log(System.Logger.Level.ERROR, null, ex);
+                    }
+                    System.out.println("Procesando " + this.getCola_procesos().getCola().getProceso().getCiclos());
                 }
-                System.out.println("Procesando " + this.getCola_procesos().getCola().getProceso().getCiclos());
+                this.getCola_terminados().add_nodo(this.getCola_procesos().getCola().getProceso());
+                this.getCola_procesos().setCola(this.getCola_procesos().getCola().getAnterior());
+                this.getCola_procesos().desencolar();
             }
-            //this.agregar_listo(this.getBloq().getCabeza().getProceso());
-            this.getCola_terminados().add_nodo(this.getCola_procesos().getCola().getProceso());
-            this.getCola_procesos().setCola(this.getCola_procesos().getCola().getAnterior());
-            this.getCola_procesos().desencolar();
-            }
-            
-           
-
         }
-        }
+    }
     }
 

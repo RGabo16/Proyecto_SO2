@@ -1,7 +1,9 @@
 package interfaces;
 
 import Clases.Archivo;
+import Clases.Cola;
 import Clases.Directorio;
+import Clases.Nodo;
 import Clases.Proceso;
 import java.awt.Color;
 import java.awt.Component;
@@ -55,6 +57,7 @@ public class View extends javax.swing.JFrame {
 
         actualizarTablaProcesos();
         actualizarTablaDiscos();
+        actualizarListasProcesos();
 
         rootNode = new DefaultMutableTreeNode("/");
         treeModel = new DefaultTreeModel(rootNode);
@@ -149,6 +152,65 @@ public class View extends javax.swing.JFrame {
 
     }
 
+    // Método para actualizar las listas de procesos
+    public void actualizarListasProcesos() {
+        // Ejecutar en el hilo de EDT (Event Dispatch Thread)
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            actualizarColaSolicitudes();
+            actualizarColaTerminadas();
+        });
+    }
+    
+    private void actualizarColaSolicitudes() {
+        if (controlador != null && controlador.getGp() != null) {
+            Cola colaProcesos = controlador.getGp().getCola_procesos();
+            java.util.List<String> procesos = new java.util.ArrayList<>();
+            
+            // Recorrer la cola de procesos y agregar a la lista
+            Nodo actual = colaProcesos.getCabeza();
+            while (actual != null) {
+                Proceso proceso = actual.getProceso();
+                if (proceso != null) {
+                    String infoProceso = String.format("%s - %s (%d bloques)",
+                            proceso.getTipo_solicitud(),
+                            proceso.getArchivo() != null ? proceso.getArchivo().getNombre() : "Sin archivo",
+                            proceso.getArchivo() != null ? proceso.getArchivo().getCantidad_bloq() : 0);
+                    procesos.add(infoProceso);
+                }
+                actual = actual.getSiguiente();
+            }
+            
+            // Actualizar la JList
+            colaSolicitudes.setListData(procesos.toArray(new String[0]));
+        }
+    }
+    
+    private void actualizarColaTerminadas() {
+        if (controlador != null && controlador.getGp() != null) {
+            Cola colaTerminados = controlador.getGp().getCola_terminados();
+            java.util.List<String> terminados = new java.util.ArrayList<>();
+            
+            // Recorrer la cola de terminados y agregar a la lista
+            Nodo actual = colaTerminados.getCabeza();
+            while (actual != null) {
+                Proceso proceso = actual.getProceso();
+                if (proceso != null) {
+                    String infoProceso = String.format("%s - %s (%d bloques) - TERMINADO",
+                            proceso.getTipo_solicitud(),
+                            proceso.getArchivo() != null ? proceso.getArchivo().getNombre() : "Sin archivo",
+                            proceso.getArchivo() != null ? proceso.getArchivo().getCantidad_bloq() : 0);
+                    terminados.add(infoProceso);
+                }
+                actual = actual.getSiguiente();
+            }
+            
+            // Actualizar la JList
+            ColaSolicitudesTerminadas.setListData(terminados.toArray(new String[0]));
+        }
+    }
+   
+
+    
     private void actualizarTablaProcesos() {
         String[] columnNames = {"Archivo", "Proceso creador", "Tamaño (bloques)", "Primer bloque", "Color"};
         Object[][] data = {};
@@ -326,7 +388,6 @@ public class View extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         clockLabel = new javax.swing.JLabel();
         crearButton = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -417,7 +478,7 @@ public class View extends javax.swing.JFrame {
 
         jLabel2.setText("Cola de solicitudes terminadas");
 
-        planPolicy.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FIFO", "SSTF", "SCAN", "C-SCAN" }));
+        planPolicy.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FIFO", "LIFO", "LOOK", "C-LOOK" }));
 
         jLabel3.setText("Política de planificación:");
 
@@ -513,19 +574,6 @@ public class View extends javax.swing.JFrame {
 
         editView.addTab("Simulación", jPanel1);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 922, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 650, Short.MAX_VALUE)
-        );
-
-        editView.addTab("Métricas", jPanel2);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -540,63 +588,173 @@ public class View extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void modeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modeButtonActionPerformed
+    private void crearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crearButtonActionPerformed
         // TODO add your handling code here:
-        if (modeButton.isSelected()) {
-            modeButton.setText("Modo Usuario");
-            isAdmin = false;
-        } else {
-            modeButton.setText("Modo Administrador");
-            isAdmin = true;
+        int resultado = JOptionPane.showConfirmDialog(
+            null,
+            panel,
+            "Crear nuevo Archivo/Directorio",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE
+        );
+
+        // Si el usuario cancela, no hacer nada
+        if (resultado != JOptionPane.OK_OPTION) {
+            return;
         }
-    }//GEN-LAST:event_modeButtonActionPerformed
 
-    private void modeButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_modeButtonItemStateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_modeButtonItemStateChanged
+        String nombre = nombreField.getText();
+        String tipo = directorioButton.isSelected() ? "Directorio" : "Archivo";
+        int bloques = (int) bloquesSpinner.getValue();
+        String privacidad = (String) privacidadCombo.getSelectedItem();
 
-    private void jTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jTreeValueChanged
-        // TODO add your handling code here:
+        String creador = isAdmin ? "Modo Administrador" : "Modo Usuario";
+
+        // Validar que el nombre no esté vacío
+        if (nombre.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "El nombre no puede estar vacío.", "Error de Entrada", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Obtener el nodo seleccionado en el árbol (será el padre)
+        DefaultMutableTreeNode nodoPadre = getSelectedNodeOrRoot();
+
+        // Verificar que si el padre es un archivo, no se puedan agregar hijos
+        if (nodoPadre.getUserObject() instanceof Archivo) {
+            JOptionPane.showMessageDialog(null, "No se pueden agregar elementos dentro de un archivo.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int bloquesRequeridos = tipo.equals("Archivo") ? bloques : 1;
+        int primerBloque = encontrarPrimerBloqueDisponible(bloquesRequeridos);
+
+        if (primerBloque == -1) {
+            JOptionPane.showMessageDialog(this,
+                "No hay espacio suficiente en el disco para crear '" + nombre + "'.",
+                "Espacio insuficiente",
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Crear el objeto y el nodo del árbol
+        Object nuevoObjeto;
+        DefaultMutableTreeNode nuevoNodo;
+        Proceso nuevoProceso;
+
+        java.awt.Color color = generarColorUnico();
+
+        if (tipo.equals("Archivo")) {
+            // Crear archivo - los archivos son hojas (no pueden tener hijos)
+            Archivo nuevoArchivo = new Archivo(nombre, bloques, privacidad, creador);
+            nuevoObjeto = nuevoArchivo;
+            nuevoNodo = new DefaultMutableTreeNode(nuevoArchivo);
+            // Los archivos son hojas por definición
+
+            // Agregar a Proceso
+            nuevoProceso = new Proceso("Crear", nuevoArchivo);
+            this.getControlador().getGp().getCola_procesos().add_nodo(nuevoProceso);
+
+            // Agregar a la tabla de procesos
+            agregarProcesoATabla(nuevoArchivo, nuevoProceso, bloques, primerBloque, color, creador);
+
+            // Mostrar en la tabla de discos
+            mostrarEnTablaDiscos(nuevoArchivo, bloques, primerBloque, color);
+
+            actualizarListasProcesos();
+
+        } else {
+            // Crear directorio - los directorios pueden tener hijos
+            Directorio nuevoDirectorio = new Directorio(nombre, creador);
+            nuevoObjeto = nuevoDirectorio;
+            nuevoNodo = new DefaultMutableTreeNode(nuevoDirectorio);
+            // Los directorios permiten hijos por defecto
+
+            nuevoProceso = new Proceso("Crear", nuevoDirectorio);
+            this.getControlador().getGp().getCola_procesos().add_nodo(nuevoProceso);
+
+            // Agregar a la tabla de procesos
+            agregarProcesoATabla(nuevoDirectorio, nuevoProceso, 1, primerBloque, color, creador);
+
+            // Mostrar en la tabla de discos
+            mostrarEnTablaDiscos(nuevoDirectorio, 1, primerBloque, color);
+
+            actualizarListasProcesos();
+
+        }
+
+        // Agregar el nodo al árbol
+        treeModel.insertNodeInto(nuevoNodo, nodoPadre, nodoPadre.getChildCount());
+
+        jTree.expandPath(new TreePath(nodoPadre.getPath()));
+
+        // Limpiar campos después de crear
+        nombreField.setText("");
+        bloquesSpinner.setValue(1);
+        privacidadCombo.setSelectedIndex(0);
+
+        // Forzar actualización del árbol
+        treeModel.reload(nodoPadre);
+    }//GEN-LAST:event_crearButtonActionPerformed
+
+    private void eliminarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarButtonActionPerformed
         DefaultMutableTreeNode nodoSeleccionado = (DefaultMutableTreeNode) jTree.getLastSelectedPathComponent();
 
-        if (nodoSeleccionado != null) {
-            Object datosNodo = nodoSeleccionado.getUserObject();
-            String detalles = "";
-
-            // EN MODO USUARIO: Verificar permisos de visualización
-            if (!isAdmin) {
-                String creador = obtenerCreadorDeObjeto(datosNodo);
-                String privacidad = "";
-
-                if (datosNodo instanceof Archivo) {
-                    privacidad = ((Archivo) datosNodo).getPrivacidad();
-                }
-
-                // Si es privado y no fue creado por el usuario, no mostrar detalles
-                if ("admin".equals(creador) && "Privado".equals(privacidad)) {
-                    detalles = "Acceso denegado: Archivo privado del administrador";
-                    detailsLabel.setText("<html>" + detalles + "</html>");
-                    return;
-                }
-            }
-
-            if (datosNodo instanceof Archivo) {
-                Archivo archivo = (Archivo) datosNodo;
-                detalles = String.format("Archivo: %s\nTamaño: %d bloques\nPrivacidad: %s\nCreador: %s",
-                        archivo.getNombre(), archivo.getCantidad_bloq(), archivo.getPrivacidad(), archivo.getCreador());
-            } else if (datosNodo instanceof Directorio) {
-                Directorio directorio = (Directorio) datosNodo;
-                detalles = String.format("Directorio: %s\nElementos: %d\nCreador: %s",
-                        directorio.getNombre(), nodoSeleccionado.getChildCount(), directorio.getCreador());
-            } else if (datosNodo instanceof String) {
-                detalles = "Directorio Raíz: " + datosNodo;
-            }
-
-            detailsLabel.setText("<html>" + detalles.replace("\n", "<br>") + "</html>");
-            System.out.println("Nodo seleccionado: " + datosNodo);
+        if (nodoSeleccionado == null) {
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione un elemento para eliminar.", "Sin selección", JOptionPane.WARNING_MESSAGE);
+            return;
         }
 
-    }//GEN-LAST:event_jTreeValueChanged
+        // No permitir eliminar la raíz
+        if (nodoSeleccionado == rootNode) {
+            JOptionPane.showMessageDialog(this, "No se puede eliminar el directorio raíz.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Object objeto = nodoSeleccionado.getUserObject();
+
+        // VERIFICAR PERMISOS EN MODO USUARIO
+        if (!isAdmin) {
+            String creador = obtenerCreadorDeObjeto(objeto);
+            if ("Modo Administrador".equals(creador)) {
+                JOptionPane.showMessageDialog(this,
+                    "No tiene permisos para eliminar elementos creados por el administrador.",
+                    "Permiso denegado",
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        }
+
+        String nombre = obtenerNombreDeObjeto(objeto);
+
+        int confirmacion = JOptionPane.showConfirmDialog(
+            this,
+            "¿Está seguro de que desea eliminar '" + nombre + "'?",
+            "Confirmar eliminación",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            // Eliminar del árbol
+            treeModel.removeNodeFromParent(nodoSeleccionado);
+
+            eliminarDeTablas(nombre);
+
+            // Agregar proceso de eliminación a la cola
+            if (objeto instanceof Archivo) {
+                Proceso procesoEliminar = new Proceso("Eliminar", (Archivo) objeto);
+                
+                this.getControlador().getGp().getCola_procesos().add_nodo(procesoEliminar);
+                        actualizarListasProcesos();
+
+            } else if (objeto instanceof Directorio) {
+                Proceso procesoEliminar = new Proceso("Eliminar", (Directorio) objeto);
+                this.getControlador().getGp().getCola_procesos().add_nodo(procesoEliminar);
+                    actualizarListasProcesos();
+
+            }
+        }
+    }//GEN-LAST:event_eliminarButtonActionPerformed
 
     private void editarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editarButtonActionPerformed
         DefaultMutableTreeNode nodoSeleccionado = (DefaultMutableTreeNode) jTree.getLastSelectedPathComponent();
@@ -613,9 +771,9 @@ public class View extends javax.swing.JFrame {
             String creador = obtenerCreadorDeObjeto(objeto);
             if ("admin".equals(creador)) {
                 JOptionPane.showMessageDialog(this,
-                        "No tiene permisos para editar elementos creados por el administrador.",
-                        "Permiso denegado",
-                        JOptionPane.WARNING_MESSAGE);
+                    "No tiene permisos para editar elementos creados por el administrador.",
+                    "Permiso denegado",
+                    JOptionPane.WARNING_MESSAGE);
                 return;
             }
         }
@@ -647,11 +805,11 @@ public class View extends javax.swing.JFrame {
         }
 
         int resultado = JOptionPane.showConfirmDialog(
-                null,
-                panelEdicion,
-                "Editar Elemento",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE
+            null,
+            panelEdicion,
+            "Editar Elemento",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE
         );
 
         if (resultado == JOptionPane.OK_OPTION) {
@@ -671,6 +829,8 @@ public class View extends javax.swing.JFrame {
                 if (bloquesSpinnerEditar != null) {
                     int nuevosBloques = (int) bloquesSpinnerEditar.getValue();
                     archivo.setCantidad_bloq(nuevosBloques);
+                    actualizarListasProcesos();
+
                 }
                 if (privacidadComboEditar != null) {
                     archivo.setPrivacidad((String) privacidadComboEditar.getSelectedItem());
@@ -678,6 +838,8 @@ public class View extends javax.swing.JFrame {
             } else if (objeto instanceof Directorio) {
                 Directorio directorio = (Directorio) objeto;
                 directorio.setNombre(nuevoNombre);
+                actualizarListasProcesos();
+
             }
 
             // ACTUALIZAR LA TABLA DE PROCESOS
@@ -695,8 +857,64 @@ public class View extends javax.swing.JFrame {
                 this.getControlador().getGp().getCola_procesos().add_nodo(procesoEditar);
             }
         }
-
     }//GEN-LAST:event_editarButtonActionPerformed
+
+    private void jTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jTreeValueChanged
+        // TODO add your handling code here:
+        DefaultMutableTreeNode nodoSeleccionado = (DefaultMutableTreeNode) jTree.getLastSelectedPathComponent();
+
+        if (nodoSeleccionado != null) {
+            Object datosNodo = nodoSeleccionado.getUserObject();
+            String detalles = "";
+
+            // EN MODO USUARIO: Verificar permisos de visualización
+            if (!isAdmin) {
+                String creador = obtenerCreadorDeObjeto(datosNodo);
+                String privacidad = "";
+
+                if (datosNodo instanceof Archivo) {
+                    privacidad = ((Archivo) datosNodo).getPrivacidad();
+                }
+
+                // Si es privado y no fue creado por el usuario, no mostrar detalles
+                if ("admin".equals(creador) && "Privado".equals(privacidad)) {
+                    detalles = "Acceso denegado: Archivo privado del administrador";
+                    detailsLabel.setText("<html>" + detalles + "</html>");
+                    return;
+                }
+            }
+
+            if (datosNodo instanceof Archivo) {
+                Archivo archivo = (Archivo) datosNodo;
+                detalles = String.format("Archivo: %s\nTamaño: %d bloques\nPrivacidad: %s\nCreador: %s",
+                    archivo.getNombre(), archivo.getCantidad_bloq(), archivo.getPrivacidad(), archivo.getCreador());
+            } else if (datosNodo instanceof Directorio) {
+                Directorio directorio = (Directorio) datosNodo;
+                detalles = String.format("Directorio: %s\nElementos: %d\nCreador: %s",
+                    directorio.getNombre(), nodoSeleccionado.getChildCount(), directorio.getCreador());
+            } else if (datosNodo instanceof String) {
+                detalles = "Directorio Raíz: " + datosNodo;
+            }
+
+            detailsLabel.setText("<html>" + detalles.replace("\n", "<br>") + "</html>");
+            System.out.println("Nodo seleccionado: " + datosNodo);
+        }
+    }//GEN-LAST:event_jTreeValueChanged
+
+    private void modeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modeButtonActionPerformed
+        // TODO add your handling code here:
+        if (modeButton.isSelected()) {
+            modeButton.setText("Modo Usuario");
+            isAdmin = false;
+        } else {
+            modeButton.setText("Modo Administrador");
+            isAdmin = true;
+        }
+    }//GEN-LAST:event_modeButtonActionPerformed
+
+    private void modeButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_modeButtonItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_modeButtonItemStateChanged
 
     private void actualizarProcesoEnTabla(String nombreAntiguo, String nuevoNombre, Object objeto) {
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
@@ -776,62 +994,6 @@ public class View extends javax.swing.JFrame {
         }
     }
 
-    private void eliminarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarButtonActionPerformed
-        DefaultMutableTreeNode nodoSeleccionado = (DefaultMutableTreeNode) jTree.getLastSelectedPathComponent();
-
-        if (nodoSeleccionado == null) {
-            JOptionPane.showMessageDialog(this, "Por favor, seleccione un elemento para eliminar.", "Sin selección", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        // No permitir eliminar la raíz
-        if (nodoSeleccionado == rootNode) {
-            JOptionPane.showMessageDialog(this, "No se puede eliminar el directorio raíz.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        Object objeto = nodoSeleccionado.getUserObject();
-
-        // VERIFICAR PERMISOS EN MODO USUARIO
-        if (!isAdmin) {
-            String creador = obtenerCreadorDeObjeto(objeto);
-            if ("Modo Administrador".equals(creador)) {
-                JOptionPane.showMessageDialog(this,
-                        "No tiene permisos para eliminar elementos creados por el administrador.",
-                        "Permiso denegado",
-                        JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-        }
-
-        String nombre = obtenerNombreDeObjeto(objeto);
-
-        int confirmacion = JOptionPane.showConfirmDialog(
-                this,
-                "¿Está seguro de que desea eliminar '" + nombre + "'?",
-                "Confirmar eliminación",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE
-        );
-
-        if (confirmacion == JOptionPane.YES_OPTION) {
-            // Eliminar del árbol
-            treeModel.removeNodeFromParent(nodoSeleccionado);
-
-            eliminarDeTablas(nombre);
-
-            // Agregar proceso de eliminación a la cola
-            if (objeto instanceof Archivo) {
-                Proceso procesoEliminar = new Proceso("Eliminar", (Archivo) objeto);
-                this.getControlador().getGp().getCola_procesos().add_nodo(procesoEliminar);
-            } else if (objeto instanceof Directorio) {
-                Proceso procesoEliminar = new Proceso("Eliminar", (Directorio) objeto);
-                this.getControlador().getGp().getCola_procesos().add_nodo(procesoEliminar);
-            }
-        }
-
-    }//GEN-LAST:event_eliminarButtonActionPerformed
-
     private String obtenerCreadorDeObjeto(Object objeto) {
         if (objeto instanceof Archivo) {
             return ((Archivo) objeto).getCreador();
@@ -897,110 +1059,6 @@ public class View extends javax.swing.JFrame {
         }
         return "Desconocido";
     }
-
-    private void crearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crearButtonActionPerformed
-        // TODO add your handling code here:
-        int resultado = JOptionPane.showConfirmDialog(
-                null,
-                panel,
-                "Crear nuevo Archivo/Directorio",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE
-        );
-
-        // Si el usuario cancela, no hacer nada
-        if (resultado != JOptionPane.OK_OPTION) {
-            return;
-        }
-
-        String nombre = nombreField.getText();
-        String tipo = directorioButton.isSelected() ? "Directorio" : "Archivo";
-        int bloques = (int) bloquesSpinner.getValue();
-        String privacidad = (String) privacidadCombo.getSelectedItem();
-
-        String creador = isAdmin ? "Modo Administrador" : "Modo Usuario";
-
-        // Validar que el nombre no esté vacío
-        if (nombre.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "El nombre no puede estar vacío.", "Error de Entrada", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Obtener el nodo seleccionado en el árbol (será el padre)
-        DefaultMutableTreeNode nodoPadre = getSelectedNodeOrRoot();
-
-        // Verificar que si el padre es un archivo, no se puedan agregar hijos
-        if (nodoPadre.getUserObject() instanceof Archivo) {
-            JOptionPane.showMessageDialog(null, "No se pueden agregar elementos dentro de un archivo.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        int bloquesRequeridos = tipo.equals("Archivo") ? bloques : 1;
-        int primerBloque = encontrarPrimerBloqueDisponible(bloquesRequeridos);
-
-        if (primerBloque == -1) {
-            JOptionPane.showMessageDialog(this,
-                    "No hay espacio suficiente en el disco para crear '" + nombre + "'.",
-                    "Espacio insuficiente",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Crear el objeto y el nodo del árbol
-        Object nuevoObjeto;
-        DefaultMutableTreeNode nuevoNodo;
-        Proceso nuevoProceso;
-
-        java.awt.Color color = generarColorUnico();
-
-        if (tipo.equals("Archivo")) {
-            // Crear archivo - los archivos son hojas (no pueden tener hijos)
-            Archivo nuevoArchivo = new Archivo(nombre, bloques, privacidad, creador);
-            nuevoObjeto = nuevoArchivo;
-            nuevoNodo = new DefaultMutableTreeNode(nuevoArchivo);
-            // Los archivos son hojas por definición
-
-            // Agregar a Proceso
-            nuevoProceso = new Proceso("Crear", nuevoArchivo);
-            this.getControlador().getGp().getCola_procesos().add_nodo(nuevoProceso);
-
-            // Agregar a la tabla de procesos
-            agregarProcesoATabla(nuevoArchivo, nuevoProceso, bloques, primerBloque, color, creador);
-
-            // Mostrar en la tabla de discos
-            mostrarEnTablaDiscos(nuevoArchivo, bloques, primerBloque, color);
-
-        } else {
-            // Crear directorio - los directorios pueden tener hijos
-            Directorio nuevoDirectorio = new Directorio(nombre, creador);
-            nuevoObjeto = nuevoDirectorio;
-            nuevoNodo = new DefaultMutableTreeNode(nuevoDirectorio);
-            // Los directorios permiten hijos por defecto
-
-            nuevoProceso = new Proceso("Crear", nuevoDirectorio);
-            this.getControlador().getGp().getCola_procesos().add_nodo(nuevoProceso);
-
-            // Agregar a la tabla de procesos
-            agregarProcesoATabla(nuevoDirectorio, nuevoProceso, 1, primerBloque, color, creador);
-
-            // Mostrar en la tabla de discos
-            mostrarEnTablaDiscos(nuevoDirectorio, 1, primerBloque, color);
-
-        }
-
-        // Agregar el nodo al árbol
-        treeModel.insertNodeInto(nuevoNodo, nodoPadre, nodoPadre.getChildCount());
-
-        jTree.expandPath(new TreePath(nodoPadre.getPath()));
-
-        // Limpiar campos después de crear
-        nombreField.setText("");
-        bloquesSpinner.setValue(1);
-        privacidadCombo.setSelectedIndex(0);
-
-        // Forzar actualización del árbol
-        treeModel.reload(nodoPadre);
-    }//GEN-LAST:event_crearButtonActionPerformed
 
     private void agregarProcesoATabla(Object objeto, Proceso proceso, int bloques, int primerBloque, java.awt.Color color, String creador) {
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
@@ -1220,14 +1278,6 @@ public class View extends javax.swing.JFrame {
         this.jPanel1 = jPanel1;
     }
 
-    public JPanel getjPanel2() {
-        return jPanel2;
-    }
-
-    public void setjPanel2(JPanel jPanel2) {
-        this.jPanel2 = jPanel2;
-    }
-
     public JScrollPane getjScrollPane1() {
         return jScrollPane1;
     }
@@ -1354,7 +1404,6 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
